@@ -1,4 +1,4 @@
-.login-container {
+/* .login-container {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -11,5 +11,107 @@
   background-color: #FFFCFC;
   box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.25);
 
+} */
+
+main{
+  width: 100%;
+  height: calc(100vh - 98px);
+  background-color: #F2F2F2;
+  position: relative;
 }
 
+.wrap{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  width: 1048px;
+  height: 525px;
+  background: #FFFCFC;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.25);
+  text-decoration: none;
+}
+
+.panel{
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+}
+
+.selectionPanel{
+  font-size: 0;
+  margin: 0 0 30px 0; 
+}
+
+.login-link{
+  text-decoration: none;
+  display: inline-block;
+  font-family: 'Roboto Condensed';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 28px;
+  text-align: center;
+  color: #000000;
+  width: 220px;
+  padding: 15px;
+  border-bottom: 1px solid  #FFC200;
+}
+
+.register-link{
+  text-decoration: none;
+  display: inline-block;
+  font-family: 'Roboto Condensed';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 28px;
+  text-align: center;
+  color: #000000;
+  padding: 15px;
+  width: 220px;
+}
+
+
+form>input{
+  border: 1px solid #595959;
+  color: #595959;
+  width: 440px;
+  height: 40px;
+  font-family: 'Roboto Condensed';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  padding-left: 20px; 
+  display: block;
+  margin: 0 0 20px 0; 
+}
+
+.resetPasword-link{
+  text-decoration: none;
+  color: #FFC200;
+  font-family: 'Roboto Condensed';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  text-align: right;
+}
+
+.loggedParent-link>button{
+  color: #FFC200;
+  background: #FFFFFF;
+  border: 1px solid #FFC200;
+  width: 440px;
+  height: 40px;
+  font-family: 'Roboto Condensed',sans-serif;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 24px;
+  margin: 20px 0 0 0; 
+}
+
+.loggedParent-link>button:hover{
+  background-color: #FFC200;
+  color: #ffffff;
+}
