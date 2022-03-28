@@ -1,10 +1,8 @@
 :root {
-  --primary: #fff
+  --primary: #FFFFFF;
 }
 
 .btn {
-  padding: 8px 20px;
-  border-radius: 2px;
   outline: none;
   border: none;
   cursor: pointer;
@@ -12,32 +10,37 @@
 
 .btn--primary {
   background-color: var(--primary);
-  color: #242424;
-  border: 1px solid var(--primary);
+  color: #FFC200;
+  border: 1px solid #FFC200;
+
 }
 
 .btn--outline {
-  background-color: transparent;
-  color: #fff;
-  padding: 8px 20px;
-  border: 1px solid var(--primary);
-  transition: all 0.3s ease-out;
+  /* TO DO*/
+}
+
+.btn--small {
+  /*  TO DO */
 }
 
 .btn--medium {
-  padding: 8px 20px;
-  font-size: 18px;
+  /*  TO DO */
 }
 
 .btn--large {
-  padding: 12px 26px;
-  font-size: 20px;
+  width: 440px;
+  height: 40px;
+  font-family: 'Roboto Condensed',sans-serif;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 24px;
+  margin: 20px 0 0 0;
 }
 
 .btn--large:hover,
 .btn--medium:hover {
   transition: all 0.3s ease-out;
-  background: #fff;
-  color: #242424;
+  background: #FFC200;
+  color: #ffffff;
   transition: 250ms;
 }
