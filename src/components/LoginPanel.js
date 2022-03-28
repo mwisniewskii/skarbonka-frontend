@@ -1,7 +1,20 @@
 import React from 'react';
-// import { Button } from './Button';
-import { Link } from 'react-router-dom'
+import { Button } from './Button';
+import { Link } from 'react-router-dom';
 import "./LoginPanel.css";
+import { Formik, Field, Form, ErrorMessage } from 'formik';
+import * as Yup from "yup";
+
+const LoginSchema = Yup.object().shape({
+
+   email: Yup.string()
+     .email(<p>Niepoprawny e-mail</p>)
+     .required(<p>E-mail jest wymagany!</p>),
+
+   password: Yup.string()
+     .required(<p>Hasło jest wymagane!</p>)
+
+ });
 
 function LoginPanel () {
   return (
@@ -17,16 +30,50 @@ function LoginPanel () {
                 <div>Utwórz konto</div>
               </Link>
             </div>
-            <form action="POST">
-              <input placeholder="E-mail" type="text" name="e-mail" />
-              <input placeholder="Hasło" type="text" name="haslo" />
-              <Link to="/resetPassword" className="resetPasword-link">
-                <p>Zapomniałeś hasła?</p>
-              </Link>
-              <Link to="/loggedParent" className="loggedParent-link">
-                <button>Zaloguj się</button>
-              </Link>
-            </form>
+            <Formik
+              initialValues={{
+                email: '',
+                password: '',
+              }}
+              validationSchema={LoginSchema}
+              onSubmit={async (values) => {
+                await new Promise((r) => setTimeout(r, 500));
+                alert(JSON.stringify(values, null, 2));
+              }}
+            >
+              {({ errors, touched }) => (
+                <Form>
+                  <Field
+                    id="email"
+                    name="email"
+                    placeholder="E-mail"
+                    type="email"
+                  />
+                  <ErrorMessage name="email" />
+
+                  <Field
+                    id="password"
+                    name="password"
+                    placeholder="Hasło"
+                  />
+                  <ErrorMessage name="password" />
+
+                  <Link to="/resetPassword" className="resetPasword-link">
+                    <p>Zapomniałeś hasła?</p>
+                  </Link>
+
+                  <Button
+                    buttonStyle='btn--primary'
+                    buttonSize='btn--large'
+                    type='submit'
+                  >
+                    Zaloguj się
+                  </Button>
+
+                </Form>
+              )}
+
+            </Formik>
           </div>
         </div>
       </main>
