@@ -14,7 +14,6 @@ main{
   height: 525px;
   background: #FFFCFC;
   box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.25);
-  text-decoration: none;
 }
 
 .panel{
@@ -32,9 +31,6 @@ main{
 .login-link{
   text-decoration: none;
   display: inline-block;
-  font-family: 'Roboto Condensed';
-  font-style: normal;
-  font-weight: 400;
   font-size: 24px;
   line-height: 28px;
   text-align: center;
@@ -47,9 +43,6 @@ main{
 .register-link{
   text-decoration: none;
   display: inline-block;
-  font-family: 'Roboto Condensed';
-  font-style: normal;
-  font-weight: 400;
   font-size: 24px;
   line-height: 28px;
   text-align: center;
@@ -58,15 +51,12 @@ main{
   width: 220px;
 }
 
-
 form>input{
   border: 1px solid #595959;
   color: #595959;
   width: 440px;
   height: 40px;
   font-family: 'Roboto Condensed';
-  font-style: normal;
-  font-weight: 400;
   font-size: 18px;
   padding-left: 20px; 
   display: block;
@@ -77,12 +67,21 @@ form>p{
   margin: -5px 0 15px 0;
 }
 
+.errors{
+  color: #d6211d;
+  font-weight: 700;
+  font-size: 14px;
+}
+
 .resetPasword-link{
   text-decoration: none;
   color: #FFC200;
-  font-family: 'Roboto Condensed';
-  font-style: normal;
   font-weight: 400;
   font-size: 18px;
   text-align: right;
+}
+
+.resetPasword-link:hover{
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
 }
