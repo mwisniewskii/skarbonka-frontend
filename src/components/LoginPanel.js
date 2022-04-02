@@ -10,14 +10,7 @@ const LoginSchema = Yup.object().shape({
     .email("Niepoprawny e-mail!")
     .required("E-mail jest wymagany!"),
 
-  password: Yup.string()
-    .required("Hasło jest wymagane!")
-    .min(8, "Hasło musi zawierać minimum 8 znaków.")
-    .matches(/^.*(?=.*\d).*$/, "Hasło musi zawierać przynajmniej jedną cyfrę.")
-    .matches(
-      /^.*((?=.*[A-Z]){1}).*$/,
-      "Hasło musi zawierać przynajmniej jedną wielką literę."
-    ),
+  password: Yup.string().required("Hasło jest wymagane!"),
 });
 
 function LoginPanel() {
