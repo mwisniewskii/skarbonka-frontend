@@ -33,13 +33,34 @@ function LoginPanel() {
                 password: "",
               }}
               validationSchema={LoginSchema}
+              // onSubmit={async (values) => {
+              //   await new Promise((r) => setTimeout(r, 500));
+              //   alert(JSON.stringify(values, null, 2));
+              // }}
               onSubmit={async (values) => {
-                await new Promise((r) => setTimeout(r, 500));
-                alert(JSON.stringify(values, null, 2));
+                await fetch("http://api.mwis.pl/auth/login/", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  credentials: "include",
+                  body: JSON.stringify(values, null, 2),
+                }).then((response) => {
+                  response.ok ? console.log("ok") : console.log("nieok");
+                });
+
+                // const content = await response.json();
+                // console.log(content);
+
+                // if (response) {
+                //   console.log("ok");
+                // } else {
+                //   console.log("NIEok");
+                // }
               }}
             >
-              {({ errors, touched }) => (
-                <Form>
+              {({ errors, handleSubmit, touched }) => (
+                <Form onSubmit={handleSubmit}>
                   <Field
                     id="email"
                     name="email"

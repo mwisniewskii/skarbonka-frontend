@@ -8,15 +8,15 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
 const LoginSchemat = Yup.object().shape({
-  name: Yup.string().required("Imię jest wymagane!"),
+  first_name: Yup.string().required("Imię jest wymagane!"),
 
-  surname: Yup.string().required("Nazwisko jest wymagane!"),
+  last_name: Yup.string().required("Nazwisko jest wymagane!"),
 
   email: Yup.string()
     .email("Niepoprawny e-mail!")
     .required("E-mail jest wymagany!"),
 
-  password: Yup.string()
+  password1: Yup.string()
     .required("Hasło jest wymagane!")
     .min(8, "Hasło musi zawierać minimum 8 znaków.")
     .matches(/^.*(?=.*\d).*$/, "Hasło musi zawierać przynajmniej jedną cyfrę.")
@@ -27,7 +27,7 @@ const LoginSchemat = Yup.object().shape({
 
   password2: Yup.string()
     .required("Pole jest wymagane!")
-    .oneOf([Yup.ref("password")], "Podane hasła nie są identyczne"),
+    .oneOf([Yup.ref("password1")], "Podane hasła nie są identyczne"),
 });
 
 function RegisterPanel() {
@@ -46,33 +46,83 @@ function RegisterPanel() {
             </div>
             <Formik
               initialValues={{
-                name: "",
-                surname: "",
+                first_name: "",
+                last_name: "",
                 email: "",
-                password: "",
+                password1: "",
                 password2: "",
               }}
               validationSchema={LoginSchemat}
+              // onSubmit={async (values) => {
+              //   await new Promise((r) => setTimeout(r, 500));
+              //   alert(JSON.stringify(values, null, 2));
+              // }}
               onSubmit={async (values) => {
-                await new Promise((r) => setTimeout(r, 500));
-                alert(JSON.stringify(values, null, 2));
+                let resStatus = 0;
+                // e.preventDefault();
+                await fetch("http://api.mwis.pl/auth/registration/", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(values, null, 2),
+                })
+                  // .then((response) => {
+                  //   response.ok ? console.log("ok") : console.log("nieok");
+                  // })
+                  .then((res) => {
+                    resStatus = res.status;
+                    return res.json();
+                  })
+                  .then((res) => {
+                    switch (resStatus) {
+                      case 201:
+                        console.log("success");
+                        break;
+                      case 400:
+                        console.log("NOTsuccess");
+                        break;
+                      case 500:
+                        console.log("server error, try again");
+                        break;
+                      default:
+                        console.log("unhandled");
+                        break;
+                    }
+                  })
+                  .catch((err) => {
+                    console.error(err);
+                  });
+                // const content = await response.json();
+                // console.log(content);
+
+                // if (response) {
+                //   console.log("ok");
+                // } else {
+                //   console.log("NIEok");
+                // }
               }}
             >
-              {({ errors, touched }) => (
-                <Form>
-                  <Field id="name" name="name" placeholder="Imię" type="text" />
+              {({ errors, handleSubmit, touched }) => (
+                <Form onSubmit={handleSubmit}>
+                  <Field
+                    id="first_name"
+                    name="first_name"
+                    placeholder="Imię"
+                    type="text"
+                  />
                   <p className="errors">
-                    <ErrorMessage name="name" />
+                    <ErrorMessage name="first_name" />
                   </p>
 
                   <Field
-                    id="surname"
-                    name="surname"
+                    id="last_name"
+                    name="last_name"
                     placeholder="Nazwisko"
                     type="text"
                   />
                   <p className="errors">
-                    <ErrorMessage name="surname" />
+                    <ErrorMessage name="last_name" />
                   </p>
 
                   <Field
@@ -86,13 +136,13 @@ function RegisterPanel() {
                   </p>
 
                   <Field
-                    id="password"
-                    name="password"
+                    id="password1"
+                    name="password1"
                     placeholder="Hasło"
                     type="password"
                   />
                   <p className="errors">
-                    <ErrorMessage name="password" />
+                    <ErrorMessage name="password1" />
                   </p>
                   <div className="info">
                     <b> Hasło musi zawierać:</b>
