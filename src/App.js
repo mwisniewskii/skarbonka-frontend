@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 import Navbar from './components/Navbar';
 import Home from './components/pages/Home';
+import Login from "./components/pages/Login";
 import Register from "./components/pages/Register";
 import ResetPassword from "./components/pages/ResetPassword";
 import Footer from "./components/Footer";
@@ -15,6 +16,7 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/" exact element={<Home />} />
+          <Route path="/loginPanel" exact element={<Login />} />
           <Route path="/registerPanel" exact element={<Register />} />
           <Route path="/resetPasswordPanel" exact element={<ResetPassword />} />
         </Routes>

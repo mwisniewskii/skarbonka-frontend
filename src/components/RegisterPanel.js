@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "./Button";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -6,6 +6,25 @@ import { faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 import "./RegisterPanel.css";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
+
+const PositiveMessage = () => (
+  <section class="popUp">
+    <div class="register201">
+      <p>
+        Twoje konto zostało utworzone. Kliknij <em>Zaloguj się</em>.
+      </p>
+      <Link to="/loginPanel">
+        <button>Zaloguj się</button>
+      </Link>
+    </div>
+  </section>
+);
+
+const NegativeMessage = () => (
+  <p className="register400">
+    Wygląda na to, że Twoje konto zostało już utworzone.
+  </p>
+);
 
 const LoginSchemat = Yup.object().shape({
   first_name: Yup.string().required("Imię jest wymagane!"),
@@ -31,13 +50,23 @@ const LoginSchemat = Yup.object().shape({
 });
 
 function RegisterPanel() {
+  const [responseStatus, setResponseStatus] = useState(null);
+
+  const displayMessage = () => {
+    if (responseStatus === 201) {
+      return <PositiveMessage />;
+    } else if (responseStatus === 400) {
+      return <NegativeMessage />;
+    }
+  };
+
   return (
     <>
       <div className="mainStart">
         <div className="wrapp">
           <div className="panell">
             <div className="selectionPanel">
-              <Link to="/" className="login-link2">
+              <Link to="/loginPanel" className="login-link2">
                 <div>Logowanie</div>
               </Link>
               <Link to="/registerPanel" className="register-link2">
@@ -53,54 +82,18 @@ function RegisterPanel() {
                 password2: "",
               }}
               validationSchema={LoginSchemat}
-              // onSubmit={async (values) => {
-              //   await new Promise((r) => setTimeout(r, 500));
-              //   alert(JSON.stringify(values, null, 2));
-              // }}
               onSubmit={async (values) => {
                 let resStatus = 0;
-                // e.preventDefault();
                 await fetch("http://api.mwis.pl/auth/registration/", {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
                   },
                   body: JSON.stringify(values, null, 2),
-                })
-                  // .then((response) => {
-                  //   response.ok ? console.log("ok") : console.log("nieok");
-                  // })
-                  .then((res) => {
-                    resStatus = res.status;
-                    return res.json();
-                  })
-                  .then((res) => {
-                    switch (resStatus) {
-                      case 201:
-                        console.log("success");
-                        break;
-                      case 400:
-                        console.log("NOTsuccess");
-                        break;
-                      case 500:
-                        console.log("server error, try again");
-                        break;
-                      default:
-                        console.log("unhandled");
-                        break;
-                    }
-                  })
-                  .catch((err) => {
-                    console.error(err);
-                  });
-                // const content = await response.json();
-                // console.log(content);
-
-                // if (response) {
-                //   console.log("ok");
-                // } else {
-                //   console.log("NIEok");
-                // }
+                }).then((res) => {
+                  resStatus = res.status;
+                  setResponseStatus(resStatus);
+                });
               }}
             >
               {({ errors, handleSubmit, touched }) => (
@@ -172,6 +165,7 @@ function RegisterPanel() {
                 </Form>
               )}
             </Formik>
+            {displayMessage()}
             <div className="return">
               <Link to="/">
                 <button className="returnButton">
