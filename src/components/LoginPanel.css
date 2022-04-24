@@ -17,10 +17,12 @@ main{
 }
 
 .panel{
-  position: absolute;
-  top: 40%;
-  left: 50%;
-  transform: translate(-50%,-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding-top: 70.5px;
 }
 
 .selectionPanel{
@@ -84,4 +86,11 @@ form>p{
 .resetPasword-link:hover{
   text-decoration: underline;
   text-decoration-thickness: 2px;
+}
+
+.login400{
+  text-align: center;
+  margin-top: 30px;
+  font-size: 24px;
+  color: #d6211d;
 }

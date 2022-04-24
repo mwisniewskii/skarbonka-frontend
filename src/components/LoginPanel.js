@@ -1,9 +1,15 @@
-import React from 'react';
-import { Button } from './Button';
-import { Link } from 'react-router-dom';
+import React, { useState } from "react";
+import { Button } from "./Button";
+import { Link, Navigate } from "react-router-dom";
 import "./LoginPanel.css";
-import { Formik, Field, Form, ErrorMessage } from 'formik';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleLeft } from "@fortawesome/free-solid-svg-icons";
+import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
+
+const NegativeMessage = () => (
+  <p className="login400">Wygląda na to, że e-mail lub hasło jest złe.</p>
+);
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string()
@@ -14,13 +20,23 @@ const LoginSchema = Yup.object().shape({
 });
 
 function LoginPanel() {
+  const [responseStatus, setResponseStatus] = useState(null);
+
+  const displayMessage = () => {
+    if (responseStatus === 200) {
+      return <Navigate to="/account" />;
+    } else if (responseStatus === 400) {
+      return <NegativeMessage />;
+    }
+  };
+
   return (
     <>
       <main>
         <div className="wrap">
           <div className="panel">
             <div className="selectionPanel">
-              <Link to="/" className="login-link">
+              <Link to="/loginPanel" className="login-link">
                 <div>Logowanie</div>
               </Link>
               <Link to="/registerPanel" className="register-link">
@@ -34,12 +50,22 @@ function LoginPanel() {
               }}
               validationSchema={LoginSchema}
               onSubmit={async (values) => {
-                await new Promise((r) => setTimeout(r, 500));
-                alert(JSON.stringify(values, null, 2));
+                let resStatus = 0;
+                await fetch("http://api.mwis.pl/auth/login/", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  credentials: "include",
+                  body: JSON.stringify(values, null, 2),
+                }).then((res) => {
+                  resStatus = res.status;
+                  setResponseStatus(resStatus);
+                });
               }}
             >
-              {({ errors, touched }) => (
-                <Form>
+              {({ errors, handleSubmit, touched }) => (
+                <Form onSubmit={handleSubmit}>
                   <Field
                     id="email"
                     name="email"
@@ -74,6 +100,15 @@ function LoginPanel() {
                 </Form>
               )}
             </Formik>
+            {displayMessage()}
+            <div className="return">
+              <Link to="/">
+                <button className="returnButton">
+                  <FontAwesomeIcon icon={faAngleLeft} className="faAngleLeft" />
+                  Wróc do strony głównej
+                </button>
+              </Link>
+            </div>
           </div>
         </div>
       </main>

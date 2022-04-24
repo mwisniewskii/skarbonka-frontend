@@ -55,10 +55,10 @@ const ResetPasswordPanel = () => {
               )}
             </Formik>
             <div>
-              <Link to="/">
+              <Link to="/loginPanel">
                 <button className="returnButton">
                   <FontAwesomeIcon icon={faAngleLeft} className="faAngleLeft" />
-                  Wróc do strony głównej
+                  Wróc do logowania
                 </button>
               </Link>
             </div>
