@@ -24,7 +24,7 @@ function LoginPanel() {
 
   const displayMessage = () => {
     if (responseStatus === 200) {
-      return <Navigate to="/account" />;
+      return <Navigate to="/" />;
     } else if (responseStatus === 400) {
       return <NegativeMessage />;
     }
