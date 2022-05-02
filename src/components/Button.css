@@ -19,11 +19,25 @@
 }
 
 .btn--small {
-  /*  TO DO */
+  width: 255px;
+  height: 40px;
+  font-family: 'Roboto Condensed',sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 24px;
+  text-align: center;
+  margin: 20px 0 0 0;
 }
 
 .btn--medium {
-  /*  TO DO */
+  width: 330px;
+  height: 40px;
+  font-family: 'Roboto Condensed',sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 24px;
+  text-align: center;
+  margin: 20px 0 0 0;
 }
 
 .btn--large {

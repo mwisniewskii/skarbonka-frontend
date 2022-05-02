@@ -1,0 +1,32 @@
+.navi{
+  background: rgba(225, 225, 225, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2rem;
+  z-index: 998;
+  position: static;
+  height: 75px;
+  width: 100%;
+}
+
+.navi-container {
+  display: flex;
+  height: 75px;
+  max-width: 1920px;
+}
+
+.main-page, .transfers, .credits, .loans, .user-name, .logout{
+  color: black;
+  text-align: center;
+  text-decoration: none;
+  margin-top: 30px;
+  margin-right: auto;
+  display: inline-block;
+  width: 235px;
+  height: 45px;
+}
+
+.logout-icon{
+  margin-right: 5px;
+}
