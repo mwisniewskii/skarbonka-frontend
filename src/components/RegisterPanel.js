@@ -84,7 +84,7 @@ function RegisterPanel() {
               validationSchema={LoginSchemat}
               onSubmit={async (values) => {
                 let resStatus = 0;
-                await fetch("http://api.mwis.pl/auth/registration/", {
+                await fetch("https://api.mwis.pl/auth/registration/", {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",

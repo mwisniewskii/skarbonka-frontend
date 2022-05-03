@@ -11,7 +11,7 @@ function MainPage() {
   useEffect(() => {
     (async () => {
       let resStatus = 0;
-      await fetch("http://api.mwis.pl/auth/user/", {
+      await fetch("https://api.mwis.pl/auth/user/", {
         headers: {
           "Content-Type": "application/json",
         },
@@ -27,7 +27,7 @@ function MainPage() {
     })();
   });
 
-  if (responseStatus === 200) {
+  if (responseStatus === 400) {
     return (
       <>
         <div>Hello there.</div>

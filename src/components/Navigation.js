@@ -25,7 +25,7 @@ function Navigation() {
             Pożyczki
           </Link>
 
-          <p className="user-name">USER</p>
+          <p className="user-name">Imie Nazwisko</p>
 
           <div className="logout">
             <FontAwesomeIcon icon={faArrowRightFromBracket} className="logout-icon" />

@@ -1,7 +1,7 @@
 .main{
   position: relative;
   width: 100%;
-  height: 700px;
+  height: 720px;
   background: #F2F2F2;
   margin: auto;
   display: flex;
@@ -11,10 +11,9 @@
   text-align: center;
   font-size: 24px;
   position: static;
-  width: 20%;
+  width: 40%;
   height: 90%;
-  margin-left: 10%;
-  margin-top: 2%;
+  margin: auto 15px auto 10%;
   background: #FFFCFC;
   border-radius: 40px;
   filter: drop-shadow(0px -2px 5px rgba(0, 0, 0, 0.25));
@@ -31,4 +30,72 @@
 
 .main-page{
   border-bottom: 2px solid  #FFC200;
+}
+
+.rightSideContainer{
+  text-align: center;
+  font-size: 24px;
+  position: static;
+  width: 100%;
+  height: 90%;
+  margin: auto 10% auto 15px;
+  background: #FFFCFC;
+  box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+}
+
+.create-kid{
+  display: inline-block;
+  text-decoration: none;
+  width: 235px;
+  height: 45px;
+  margin-left: 2%;
+}
+
+.title{
+  display: inline-block;
+  width: 70%;
+  height: 45px;
+  padding-right: 23%;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 28px;
+  text-align: center;
+}
+
+.title-col{
+  display: inline-block;
+  width: 190px;
+  height: 25px;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 23px;
+  text-align: center;
+
+}
+
+.all-kids{
+  display: flex;
+  margin: 2% 5% 2% 5%;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 23px;
+}
+
+.row{
+  background: #FFFFFF;
+  border: 1px solid #FFC200;
+  box-sizing: border-box;
+  width: 100%;
+  height: 55px;
+}
+
+.col{
+  display: inline-block;
+  width: 190px;
+  height: 25px;
+  margin-top: 18px;
 }

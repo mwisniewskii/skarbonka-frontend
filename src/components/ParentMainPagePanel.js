@@ -1,38 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import "./ParentMainPagePanel.css";
-import {Button} from "./Button";
+import { Button } from "./Button";
+import { faUserPen, faBook} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function ParentMainPagePanel() {
-  const [responseStatus, setResponseStatus] = useState(null);
-  // const [name, setName] = useState("");
-
-  useEffect(() => {
-    (async () => {
-      let resStatus = 0;
-      await fetch("http://api.mwis.pl/auth/user/", {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      })
-        .then((res) => {
-          resStatus = res.status;
-          setResponseStatus(resStatus);
-        })
-        .then((result) => {
-          console.log(result);
-        });
-    })();
-  });
-
-  if (responseStatus === 200) {
-    return (
-      <>
-        <div>Hello there.</div>
-      </>
-    );
-  } else {
     return (
       <>
         <div className="main">
@@ -67,17 +40,45 @@ function ParentMainPagePanel() {
               <Button
                 buttonStyle="btn--primary"
                 buttonSize="btn--medium"
-                type="submit"
+                type="button"
               >
                 Historia transakcji
               </Button>
             </Link>
-
+          </div>
+          <div className="rightSideContainer">
+            <Link to="/ParentRegisterKid" className="create-kid">
+              <Button
+                buttonStyle="btn--primary"
+                buttonSize="btn--small"
+                type="button"
+              >
+                Utwórz konto dziecka
+              </Button>
+            </Link>
+            <p className="title">Konta Twoich Dzieci</p>
+            <p className="title-col">Imie i nazwisko</p>
+            <p className="title-col">Saldo</p>
+            <p className="title-col">Kieszonkowe</p>
+            <p className="title-col">Transakcje</p>
+            <p className="title-col">Zarzadzaj</p>
+            <div className="all-kids">
+              <div className="row">
+                <p className="col">Jan Kowalski</p>
+                <p className="col">240 zł</p>
+                <p className="col">150 zł</p>
+                <Link to="/" className="col">
+                  <FontAwesomeIcon icon={ faBook } className="transfers-icon" />
+                </Link>
+                <Link to="/" className="col">
+                  <FontAwesomeIcon icon={ faUserPen } className="manage-icon" />
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </>
     );
-  }
 }
 
 export default ParentMainPagePanel;
