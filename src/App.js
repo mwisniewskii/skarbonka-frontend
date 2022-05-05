@@ -9,6 +9,7 @@ import ResetPassword from "./components/pages/ResetPassword";
 import Footer from "./components/Footer";
 import ParentRegisterKid from "./components/pages/ParentRegsiterKid";
 import ParentMainPage from "./components/pages/ParentMainPage";
+import KidMainPage from "./components/pages/KidMainPage";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/registerPanel" exact element={<Register />} />
           <Route path="/resetPasswordPanel" exact element={<ResetPassword />} />
           <Route path="/ParentMainPage" exact element={<ParentMainPage />} />
+          <Route path="/KidMainPage" exact element={<KidMainPage />} />
           <Route path="/ParentRegisterKid" exact element={<ParentRegisterKid />} />
         </Routes>
         <Footer />

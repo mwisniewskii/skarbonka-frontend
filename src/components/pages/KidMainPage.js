@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import "../../App.css";
-import ParentMainPagePanel from "../ParentMainPagePanel";
+import KidMainPagePanel from "../KidMainPagePanel";
 import Navigation from "../Navigation";
 
 
@@ -27,7 +27,7 @@ function ParentMainPage() {
     return (
       <>
         <Navigation/>
-        <ParentMainPagePanel/>
+        <KidMainPagePanel/>
       </>
     );
   } else {

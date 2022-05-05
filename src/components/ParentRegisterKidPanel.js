@@ -28,19 +28,6 @@ const RegisterKid = Yup.object().shape({
   email: Yup.string()
     .email("Niepoprawny e-mail!")
     .required("E-mail jest wymagany!"),
-
-  password1: Yup.string()
-    .required("Hasło jest wymagane!")
-    .min(8, "Hasło musi zawierać minimum 8 znaków.")
-    .matches(/^.*(?=.*\d).*$/, "Hasło musi zawierać przynajmniej jedną cyfrę.")
-    .matches(
-      /^.*((?=.*[A-Z]){1}).*$/,
-      "Hasło musi zawierać przynajmniej jedną wielką literę."
-    ),
-
-  password2: Yup.string()
-    .required("Pole jest wymagane!")
-    .oneOf([Yup.ref("password1")], "Podane hasła nie są identyczne"),
 });
 
 function ParentRegisterKidPanel() {
@@ -65,14 +52,14 @@ function ParentRegisterKidPanel() {
                 first_name: "",
                 last_name: "",
                 email: "",
-                password1: "",
-                password2: "",
-                saldo: "",
+                balance: "",
+                user_type: 2,
+                parental_control: 0,
               }}
               validationSchema={RegisterKid}
               onSubmit={async (values) => {
                 let resStatus = 0;
-                await fetch("https://api.mwis.pl/auth/registration/", {
+                await fetch("https://api.mwis.pl/users/", {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
@@ -114,33 +101,6 @@ function ParentRegisterKidPanel() {
                   />
                   <p className="errors">
                     <ErrorMessage name="email" />
-                  </p>
-
-                  <Field
-                    id="password1"
-                    name="password1"
-                    placeholder="Hasło"
-                    type="password"
-                  />
-                  <p className="errors">
-                    <ErrorMessage name="password1" />
-                  </p>
-                  <div className="info">
-                    <b> Hasło musi zawierać:</b>
-                  </div>
-                  <ul>
-                    <li>minimum 8 znaków</li>
-                    <li>przynajmniej jedna wielka litera</li>
-                    <li>przynajmniej jedna cyfra</li>
-                  </ul>
-                  <Field
-                    id="password2"
-                    name="password2"
-                    placeholder="Powtórz hasło"
-                    type="password"
-                  />
-                  <p className="errors">
-                    <ErrorMessage name="password2" />
                   </p>
                   <Field
                     id="saldo"
