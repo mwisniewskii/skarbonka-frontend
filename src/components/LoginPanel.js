@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import MainPage from "./MainPage";
 
 const NegativeMessage = () => (
   <p className="login400">Wygląda na to, że e-mail lub hasło jest złe.</p>
@@ -51,7 +52,7 @@ function LoginPanel() {
               validationSchema={LoginSchema}
               onSubmit={async (values) => {
                 let resStatus = 0;
-                await fetch("http://api.mwis.pl/auth/login/", {
+                await fetch("https://api.mwis.pl/auth/login/", {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",

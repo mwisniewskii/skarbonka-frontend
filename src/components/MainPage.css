@@ -1,3 +1,30 @@
+.userNav{
+    display: flex;
+    font-size: 24px;
+    margin: 20px 0;
+    justify-content: space-around;
+}
+
+.personalData{
+    display: flex;
+}
+
+.faUser{
+    margin-right: 10px;
+}
+
+.faLeft{
+    color: black;
+}
+
+.logout{
+    border: none;
+    background-color: transparent; 
+    font-size: 24px;
+    margin-left: 10px;
+    cursor: pointer; 
+}
+
 header{
     display: flex;
     justify-content: space-between;
@@ -43,6 +70,48 @@ aside{
 .dir:hover{
     text-decoration: underline;
     text-decoration-thickness: 2px;
+}
+
+@media (max-width: 1239px) {
+
+    .message{
+        margin-left: 300px;
+    }
+    
+}
+
+@media (max-width: 939px) {
+
+    .message{
+        margin-left: 10px;
+    }
+    
+}
+
+@media (max-width: 640px) {
+
+    .message{
+        font-size: 30px;
+        margin-left: 10px;
+    }
+
+    .authorization>p{
+        font-size: 18px;
+        margin-left: 20px;
+    }
+
+    .faCircleUser{
+        font-size: 40px;
+    }
+    
+}
+
+@media (max-width: 510px) {
+
+    .message{
+        font-size: 20px;
+    }
+    
 }
 
 .startPage{

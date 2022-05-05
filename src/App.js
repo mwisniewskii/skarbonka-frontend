@@ -7,6 +7,7 @@ import Home from './components/pages/Home';
 import Login from "./components/pages/Login";
 import Register from "./components/pages/Register";
 import ResetPassword from "./components/pages/ResetPassword";
+import ConfirmResetPassword from "./components/PasswordPanel/ConfirmResetPassword";
 import Footer from "./components/Footer";
 
 function App() {
@@ -19,6 +20,11 @@ function App() {
           <Route path="/loginPanel" exact element={<Login />} />
           <Route path="/registerPanel" exact element={<Register />} />
           <Route path="/resetPasswordPanel" exact element={<ResetPassword />} />
+          <Route
+            path="/confirmResetPassword"
+            exact
+            element={<ConfirmResetPassword />}
+          />
         </Routes>
         <Footer />
       </Router>

@@ -1,59 +1,40 @@
 import React, { useState } from "react";
-import { Button } from "./Button";
 import { Link } from "react-router-dom";
+import { Button } from "../Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft } from "@fortawesome/free-solid-svg-icons";
-import "./RegisterPanel.css";
+import "./ResetPasswordPanel.css";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
 const PositiveMessage = () => (
   <section class="popUp">
-    <div class="register201">
+    {/* <div class="register201">
       <p>
         Twoje konto zostało utworzone. Kliknij <em>Zaloguj się</em>.
       </p>
       <Link to="/loginPanel">
         <button>Zaloguj się</button>
       </Link>
-    </div>
+    </div> */}
   </section>
 );
 
 const NegativeMessage = () => (
-  <p className="register400">
-    Wygląda na to, że Twoje konto zostało już utworzone.
-  </p>
+  <p className="resetPassword400">Wygląda na to, że e-mail błędny.</p>
 );
 
-const LoginSchemat = Yup.object().shape({
-  first_name: Yup.string().required("Imię jest wymagane!"),
-
-  last_name: Yup.string().required("Nazwisko jest wymagane!"),
-
+const LoginSchema = Yup.object().shape({
   email: Yup.string()
-    .email("Niepoprawny e-mail!")
+    .email("Niepoprawny e-mail")
     .required("E-mail jest wymagany!"),
-
-  password1: Yup.string()
-    .required("Hasło jest wymagane!")
-    .min(8, "Hasło musi zawierać minimum 8 znaków.")
-    .matches(/^.*(?=.*\d).*$/, "Hasło musi zawierać przynajmniej jedną cyfrę.")
-    .matches(
-      /^.*((?=.*[A-Z]){1}).*$/,
-      "Hasło musi zawierać przynajmniej jedną wielką literę."
-    ),
-
-  password2: Yup.string()
-    .required("Pole jest wymagane!")
-    .oneOf([Yup.ref("password1")], "Podane hasła nie są identyczne"),
 });
 
-function RegisterPanel() {
+function ConfirmResetPassword() {
   const [responseStatus, setResponseStatus] = useState(null);
 
   const displayMessage = () => {
-    if (responseStatus === 201) {
+    if (responseStatus === 200) {
       return <PositiveMessage />;
     } else if (responseStatus === 400) {
       return <NegativeMessage />;
@@ -62,33 +43,23 @@ function RegisterPanel() {
 
   return (
     <>
-      <div className="mainStart">
-        <div className="wrapp">
-          <div className="panell">
-            <div className="selectionPanel">
-              <Link to="/loginPanel" className="login-link2">
-                <div>Logowanie</div>
-              </Link>
-              <Link to="/registerPanel" className="register-link2">
-                <div>Utwórz konto</div>
-              </Link>
-            </div>
+      <main>
+        <div className="wrap">
+          <div className="reset">
+            <h1>Resetowanie hasła</h1>
             <Formik
               initialValues={{
-                first_name: "",
-                last_name: "",
                 email: "",
-                password1: "",
-                password2: "",
               }}
-              validationSchema={LoginSchemat}
+              validationSchema={LoginSchema}
               onSubmit={async (values) => {
                 let resStatus = 0;
-                await fetch("https://api.mwis.pl/auth/registration/", {
+                await fetch("https://api.mwis.plauth/password/reset/confirm/", {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
                   },
+                  // credentials: "include",
                   body: JSON.stringify(values, null, 2),
                 }).then((res) => {
                   resStatus = res.status;
@@ -99,39 +70,9 @@ function RegisterPanel() {
               {({ errors, handleSubmit, touched }) => (
                 <Form onSubmit={handleSubmit}>
                   <Field
-                    id="first_name"
-                    name="first_name"
-                    placeholder="Imię"
-                    type="text"
-                  />
-                  <p className="errors">
-                    <ErrorMessage name="first_name" />
-                  </p>
-
-                  <Field
-                    id="last_name"
-                    name="last_name"
-                    placeholder="Nazwisko"
-                    type="text"
-                  />
-                  <p className="errors">
-                    <ErrorMessage name="last_name" />
-                  </p>
-
-                  <Field
-                    id="email"
-                    name="email"
-                    placeholder="E-mail"
-                    type="email"
-                  />
-                  <p className="errors">
-                    <ErrorMessage name="email" />
-                  </p>
-
-                  <Field
                     id="password1"
                     name="password1"
-                    placeholder="Hasło"
+                    placeholder="Nowe hasło"
                     type="password"
                   />
                   <p className="errors">
@@ -148,7 +89,7 @@ function RegisterPanel() {
                   <Field
                     id="password2"
                     name="password2"
-                    placeholder="Powtórz hasło"
+                    placeholder="Powtórz nowe hasło"
                     type="password"
                   />
                   <p className="errors">
@@ -160,25 +101,25 @@ function RegisterPanel() {
                     buttonSize="btn--large"
                     type="submit"
                   >
-                    Utwórz konto
+                    Ustaw nowe hasło
                   </Button>
                 </Form>
               )}
             </Formik>
             {displayMessage()}
-            <div className="return">
-              <Link to="/">
+            <div>
+              <Link to="/loginPanel">
                 <button className="returnButton">
                   <FontAwesomeIcon icon={faAngleLeft} className="faAngleLeft" />
-                  Wróc do strony głównej
+                  Wróc do logowania
                 </button>
               </Link>
             </div>
           </div>
         </div>
-      </div>
+      </main>
     </>
   );
 }
 
-export default RegisterPanel;
+export default ConfirmResetPassword;
