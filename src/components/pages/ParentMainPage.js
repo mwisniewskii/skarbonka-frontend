@@ -1,16 +1,17 @@
 import React, {useEffect, useState} from "react";
 import "../../App.css";
-import ParentMainPagePanel from "../ParentMainPagePanel";
 import Navigation from "../Navigation";
+import ParentMainPagePanel from "../ParentMainPagePanel";
 
 
 function ParentMainPage() {
+  const BaseUrl = 'https://api.mwis.pl/'
   const [responseStatus, setResponseStatus] = useState(null);
 
   useEffect(() => {
     (async () => {
       let resStatus = 0;
-      await fetch("https://api.mwis.pl/auth/user/", {
+      await fetch("".concat(`${BaseUrl}`, ['auth/user']), {
         headers: {
           "Content-Type": "application/json",
         },

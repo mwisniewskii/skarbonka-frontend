@@ -8,7 +8,9 @@
 }
 
 .leftSideContainer{
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   font-size: 24px;
   position: static;
   width: 40%;
@@ -20,12 +22,15 @@
 }
 
 .money{
+  display: flex;
   margin-top: 24px;
   line-height: 48px;
+  align-items: center;
+  flex-direction: column;
 }
 
-.blank{
-  margin: 50%;
+.transaction-history{
+  margin-top: 50%;
 }
 
 .main-page{
@@ -78,6 +83,7 @@
 
 .all-kids{
   display: flex;
+  flex-direction: column;
   margin: 2% 5% 2% 5%;
   font-style: normal;
   font-weight: 400;
@@ -91,6 +97,7 @@
   box-sizing: border-box;
   width: 100%;
   height: 55px;
+  margin-bottom: 10px;
 }
 
 .col{

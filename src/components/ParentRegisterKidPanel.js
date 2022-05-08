@@ -52,9 +52,8 @@ function ParentRegisterKidPanel() {
                 first_name: "",
                 last_name: "",
                 email: "",
-                balance: "",
                 user_type: 2,
-                parental_control: 0,
+                parental_control: 1,
               }}
               validationSchema={RegisterKid}
               onSubmit={async (values) => {
@@ -64,6 +63,7 @@ function ParentRegisterKidPanel() {
                   headers: {
                     "Content-Type": "application/json",
                   },
+                  credentials: "include",
                   body: JSON.stringify(values, null, 2),
                 }).then((res) => {
                   resStatus = res.status;
@@ -101,15 +101,6 @@ function ParentRegisterKidPanel() {
                   />
                   <p className="errors">
                     <ErrorMessage name="email" />
-                  </p>
-                  <Field
-                    id="saldo"
-                    name="saldo"
-                    placeholder="Saldo początkowe"
-                    type="number"
-                  />
-                  <p className="errors">
-                    <ErrorMessage name="saldo" />
                   </p>
 
                   <Button

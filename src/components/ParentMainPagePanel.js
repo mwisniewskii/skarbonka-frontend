@@ -4,29 +4,17 @@ import "./ParentMainPagePanel.css";
 import { Button } from "./Button";
 import { faUserPen, faBook} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { LoadingSpinner } from "./LoadingSpinner";
 
 function ParentMainPagePanel() {
+    const BaseUrl = 'https://api.mwis.pl/'
     const [id, setId] = useState();
-    const [balance, setBalance] = useState();
+    const [balance, setBalance] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const [users, setUsers] = useState([]);
 
-    const handleBalance = async () => {
-        await fetch("".concat(['https://api.mwis.pl/users/'],`${id}`,['/']), {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-          }).then((response) => {
-            console.log(response.status);
-            return response.json();
-          }).then((resJSON) => {
-              setBalance(resJSON.balance);
-          })
-        };
-
-    useEffect(() => {
-      (async () => {
-         const response = await fetch("https://api.mwis.pl/auth/user/", {
+    const UserID = async () => {
+         const response = await fetch("".concat(`${BaseUrl}`, ['auth/user']),  {
           headers: {
             "Content-Type": "application/json",
           },
@@ -34,20 +22,55 @@ function ParentMainPagePanel() {
         })
          const content = await response.json();
          setId(content.pk);
-       })();
-      handleBalance().then(r => {});
+       };
+
+    const Balance = async () => {
+        await fetch("".concat(`${BaseUrl}`, ['users/'],`${id}`), {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          }).then((response) => {
+            return response.json();
+          }).then((resJSON) => {
+              setBalance(resJSON.balance);
+              setIsLoading(false);
+          })
+        };
+
+    const FamilyUsers = async () => {
+        await fetch("".concat(`${BaseUrl}`, ['users/']),  {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }).then((response) => {
+            return response.json();
+        }).then(r => {
+            setUsers(r);
+        })
+       };
+
+    useEffect(() => {
+        UserID().then(r => {});
+        if(id) {
+          Balance().then(r => {});
+          FamilyUsers().then(r => {});
+        }
      });
 
     return (
       <>
         <div className="main">
           <div className="leftSideContainer">
-            <p className="money" >
+            <div className="money" >
               Twoje środki na koncie <br />
-              {`${balance}`}
-            </p>
+              {isLoading ? <LoadingSpinner spinnerSize="spin--medium"/> : `${balance}`  }
+            </div>
 
-            <Link to="/resetPasswordPanel" className="resetPasword-link">
+            <Link to="/resetPasswordPanel" className="deposit">
               <Button
                 buttonStyle="btn--primary"
                 buttonSize="btn--small"
@@ -57,7 +80,7 @@ function ParentMainPagePanel() {
               </Button>
             </Link>
 
-            <Link to="/resetPasswordPanel" className="resetPasword-link">
+            <Link to="/resetPasswordPanel" className="withdraw">
               <Button
                 buttonStyle="btn--primary"
                 buttonSize="btn--small"
@@ -66,8 +89,6 @@ function ParentMainPagePanel() {
                 Wypłać pieniądze
               </Button>
             </Link>
-
-            <div className="blank"></div>
 
             <Link to="/resetPasswordPanel" className="transaction-history">
               <Button
@@ -96,17 +117,22 @@ function ParentMainPagePanel() {
             <p className="title-col">Transakcje</p>
             <p className="title-col">Zarzadzaj</p>
             <div className="all-kids">
-              <div className="row">
-                <p className="col">Jan Kowalski</p>
-                <p className="col">240 zł</p>
-                <p className="col">150 zł</p>
-                <Link to="/" className="col">
-                  <FontAwesomeIcon icon={ faBook } className="transfers-icon" />
-                </Link>
-                <Link to="/" className="col">
-                  <FontAwesomeIcon icon={ faUserPen } className="manage-icon" />
-                </Link>
-              </div>
+              {isLoading ? <LoadingSpinner spinnerSize="spin--medium"/> :
+              users.filter(owner => owner.user_type !== 1).map((user) => (
+                  <div key={user.id} className="row">
+                    <p className="col">{user.first_name} {user.last_name}</p>
+                    <p className="col">{user.balance}</p>
+                    <Link to="/" className="col">
+                    <FontAwesomeIcon icon={ faBook } className="allowance-icon" />
+                    </Link>
+                    <Link to="/" className="col">
+                      <FontAwesomeIcon icon={ faBook } className="transfers-icon" />
+                    </Link>
+                    <Link to="/" className="col">
+                      <FontAwesomeIcon icon={ faUserPen } className="manage-icon" />
+                    </Link>
+                  </div>
+                ))}
             </div>
           </div>
         </div>

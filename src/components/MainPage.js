@@ -6,7 +6,6 @@ import { faCircleUser } from "@fortawesome/free-solid-svg-icons";
 
 function MainPage() {
   const [responseStatus, setResponseStatus] = useState(null);
-  // const [name, setName] = useState("");
 
   useEffect(() => {
     (async () => {
@@ -21,9 +20,6 @@ function MainPage() {
           resStatus = res.status;
           setResponseStatus(resStatus);
         })
-        .then((result) => {
-          console.log(result);
-        });
     })();
   });
 

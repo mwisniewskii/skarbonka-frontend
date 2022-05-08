@@ -14,15 +14,18 @@
   display: flex;
   height: 75px;
   max-width: 1920px;
+  flex-direction: row;
+  align-items: center;
 }
 
 .main-page, .transfers, .credits, .loans, .user-name, .logout{
+  display: flex;
+  justify-content: center;
   color: black;
   text-align: center;
   text-decoration: none;
   margin-top: 30px;
   margin-right: auto;
-  display: inline-block;
   width: 235px;
   height: 45px;
 }

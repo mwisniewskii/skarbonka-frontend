@@ -3,11 +3,14 @@ import './Navigation.css';
 import { Link } from 'react-router-dom';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import { faArrowRightFromBracket } from "@fortawesome/free-solid-svg-icons";
+import { LoadingSpinner } from "./LoadingSpinner";
 
 function Navigation() {
   const [responseStatus, setResponseStatus] = useState(null);
   const [firstName, setFirstName] = useState();
   const [lastName, setLastName] = useState();
+  const [isLoading, setIsLoading] = useState(true);
+
 
   const handleLogout = async () => {
     let resStatus = 0;
@@ -38,9 +41,9 @@ function Navigation() {
         credentials: "include",
       })
        const content = await response.json();
-
-      setFirstName(content.first_name);
-      setLastName(content.last_name);
+       setIsLoading(false);
+       setFirstName(content.first_name);
+       setLastName(content.last_name);
      })();
    });
 
@@ -65,10 +68,10 @@ function Navigation() {
             Pożyczki
           </Link>
 
-          <p className="user-name">{`${firstName} ${lastName}`}</p>
+          <div className="user-name"> {isLoading ? <LoadingSpinner spinnerSize="spin--small"/> : `${firstName} ${lastName}`}</div>
 
-          <Link to="/" onClick={handleLogout}>
-            <div className="logout">
+          <Link to="/" onClick={handleLogout} className="logout">
+            <div className="logout-container">
               <FontAwesomeIcon icon={faArrowRightFromBracket} className="logout-icon" />
               Wyloguj się
             </div>
