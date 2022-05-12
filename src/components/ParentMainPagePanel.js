@@ -7,36 +7,32 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LoadingSpinner } from "./LoadingSpinner";
 import {Dialog, DialogActions, DialogContent, DialogTitle} from "@mui/material";
 import {ErrorMessage, Field, Form, Formik} from "formik";
+import {UserInfo, FamilyUsers, BaseUrl} from "../services/ApiCalls"
+import toast, { Toaster } from 'react-hot-toast';
 import * as Yup from "yup";
 
 function ParentMainPagePanel() {
-    const BaseUrl = 'https://api.mwis.pl/'
     const [id, setId] = useState();
     const [balance, setBalance] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [users, setUsers] = useState([]);
-    const [open, setOpen] = useState(false);
+    const [openDeposit, setOpenDeposit] = useState(false);
+    const [openWithdraw, setOpenWithdraw] = useState(false);
     const [responseStatus, setResponseStatus] = useState(null);
 
-
-    const handleOpen = () => {
-      setOpen(true);
+    const handleOpenDeposit = () => {
+      setOpenDeposit(true);
     };
-    const handleClose = () => {
-      setOpen(false);
+    const handleCloseDeposit = () => {
+      setOpenDeposit(false);
+    };
+    const handleOpenWithdraw = () => {
+      setOpenWithdraw(true);
+    };
+    const handleCloseWithdraw = () => {
+      setOpenWithdraw(false);
     };
 
-
-    const UserID = async () => {
-         const response = await fetch("".concat(`${BaseUrl}`, ['auth/user']),  {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        })
-         const content = await response.json();
-         setId(content.pk);
-       };
 
     const Balance = async () => {
         await fetch("".concat(`${BaseUrl}`, ['users/'],`${id}`), {
@@ -53,25 +49,11 @@ function ParentMainPagePanel() {
           })
         };
 
-    const FamilyUsers = async () => {
-        await fetch("".concat(`${BaseUrl}`, ['users/']),  {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        }).then((response) => {
-            return response.json();
-        }).then(r => {
-            setUsers(r);
-        })
-       };
-
     useEffect(() => {
-        UserID().then(r => {});
+        UserInfo().then(r => {setId(r.pk);});
         if(id) {
           Balance().then(r => {});
-          FamilyUsers().then(r => {});
+          FamilyUsers().then(r => {setUsers(r);});
         }
      });
 
@@ -82,53 +64,26 @@ function ParentMainPagePanel() {
         .required("Kwota jest wymagana!")
     });
 
-    const PositiveMessage = () => (
-        <section className="popUp">
-          <div className="register201">
-            <p>
-              Wpłaciłes pieniadze na konto.
-            </p>
-          </div>
-        </section>
-      );
-
-    const NegativeMessage = () => (
-      <p className="register400">
-        Wystąpił błąd przy próbie wpłaty.
-      </p>
-    );
-
-
-    const displayMessage = () => {
-      if (responseStatus === 201) {
-        return <PositiveMessage />;
-      } else if (responseStatus === 400) {
-        return <NegativeMessage />;
-      }
-    };
-
-
     return (
       <>
         <div className="main">
           <div className="leftSideContainer">
             <div className="money" >
               Twoje środki na koncie <br />
-              {isLoading ? <LoadingSpinner spinnerSize="spin--medium"/> : `${balance}`  }
+              {isLoading ? <LoadingSpinner spinnerSize="spin--medium"/> : "".concat(`${balance}`, " zł")  }
             </div>
 
             <div className="deposit">
               <Button
                 buttonStyle="btn--primary"
                 buttonSize="btn--small"
-                type="submit"
-                onClick={handleOpen}
+                onClick={handleOpenDeposit}
               >
                 Wpłać pieniądze
               </Button>
               <Dialog
-                open={open}
-                onClose={handleClose}
+                open={openDeposit}
+                onClose={handleCloseDeposit}
                 >
                 <DialogTitle>Wpłać pieniądze na konto</DialogTitle>
                 <DialogContent>
@@ -138,7 +93,6 @@ function ParentMainPagePanel() {
                     }}
                     validationSchema={Money}
                     onSubmit={async (values) => {
-                      let resStatus = 0;
                       await fetch("".concat(`${BaseUrl}`, ['deposit/']), {
                         method: "POST",
                         headers: {
@@ -147,8 +101,12 @@ function ParentMainPagePanel() {
                         credentials: "include",
                         body: JSON.stringify(values, null, 2),
                       }).then((res) => {
-                        resStatus = res.status;
-                        setResponseStatus(resStatus);
+                        setResponseStatus(res.status);
+                        if (responseStatus === 201) {
+                          return toast.success("".concat('Udało się wpłacić ', `${values.amount}`,' zł!'))
+                        } else if (responseStatus === 400) {
+                          return toast.error('Nie udało się wpłacić pieniędzy!')
+                        }
                       });
                     }}
                   >
@@ -174,26 +132,27 @@ function ParentMainPagePanel() {
                     </Form>
                     )}
                   </Formik>
-                  {displayMessage()}
+                  <Toaster
+                    position="bottom-right"
+                    reverseOrder={false}
+                  />
                 </DialogContent>
                 <DialogActions>
-                  <Button onClick={handleClose}>Zamknij</Button>
+                  <Button onClick={handleCloseDeposit}>Zamknij</Button>
                 </DialogActions>
               </Dialog>
             </div>
-
             <div className="withdraw">
               <Button
                 buttonStyle="btn--primary"
                 buttonSize="btn--small"
-                type="submit"
-                onClick={handleOpen}
+                onClick={handleOpenWithdraw}
               >
                 Wypłać pieniądze
               </Button>
               <Dialog
-                open={open}
-                onClose={handleClose}
+                open={openWithdraw}
+                onClose={handleCloseWithdraw}
                 >
                 <DialogTitle>Wypłać pieniądze z konta</DialogTitle>
                 <DialogContent>
@@ -203,7 +162,6 @@ function ParentMainPagePanel() {
                     }}
                     validationSchema={Money}
                     onSubmit={async (values) => {
-                      let resStatus = 0;
                       await fetch("".concat(`${BaseUrl}`, ['withdraw/']), {
                         method: "POST",
                         headers: {
@@ -212,8 +170,12 @@ function ParentMainPagePanel() {
                         credentials: "include",
                         body: JSON.stringify(values, null, 2),
                       }).then((res) => {
-                        resStatus = res.status;
-                        setResponseStatus(resStatus);
+                        setResponseStatus(res.status);
+                        if (responseStatus === 201) {
+                          return toast.success("".concat('Udało się wypłacić ',`${values.amount}`, ' zł!'))
+                        } else if (responseStatus === 400) {
+                          return toast.error('Nie udało się wypłacić pieniędzy!')
+                        }
                       });
                     }}
                   >
@@ -239,10 +201,13 @@ function ParentMainPagePanel() {
                     </Form>
                     )}
                   </Formik>
-                  {displayMessage()}
+                  <Toaster
+                    position="bottom-right"
+                    reverseOrder={false}
+                  />
                 </DialogContent>
                 <DialogActions>
-                  <Button onClick={handleClose}>Zamknij</Button>
+                  <Button onClick={handleCloseWithdraw}>Zamknij</Button>
                 </DialogActions>
               </Dialog>
             </div>

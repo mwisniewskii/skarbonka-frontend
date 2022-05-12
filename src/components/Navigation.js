@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import { faArrowRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { LoadingSpinner } from "./LoadingSpinner";
+import {UserInfo} from "../services/ApiCalls";
 
 function Navigation() {
   const [responseStatus, setResponseStatus] = useState(null);
@@ -13,16 +14,14 @@ function Navigation() {
 
 
   const handleLogout = async () => {
-    let resStatus = 0;
     await fetch("https://api.mwis.pl/auth/logout/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       credentials: "include",
-    }).then((res) => {
-      resStatus = res.status;
-      setResponseStatus(resStatus);
+  }).then((res) => {
+      setResponseStatus(res.status);
     });
 
     if (responseStatus === 200) {
@@ -33,18 +32,11 @@ function Navigation() {
   };
 
   useEffect(() => {
-    (async () => {
-       const response = await fetch("https://api.mwis.pl/auth/user/", {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      })
-       const content = await response.json();
+    UserInfo().then(r => {
        setIsLoading(false);
-       setFirstName(content.first_name);
-       setLastName(content.last_name);
-     })();
+       setFirstName(r.first_name);
+       setLastName(r.last_name);
+    });
    });
 
 

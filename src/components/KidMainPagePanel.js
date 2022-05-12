@@ -4,39 +4,34 @@ import "./KidMainPagePanel.css";
 import { Button } from "./Button";
 import { faUserPen, faBook} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {BaseUrl, UserInfo} from "../services/ApiCalls";
 
 function KidMainPagePanel() {
     const [id, setId] = useState();
     const [balance, setBalance] = useState();
+    const [isLoading, setIsLoading] = useState(true);
 
-    const handleBalance = async () => {
-      await fetch("".concat(['https://api.mwis.pl/users/'],`${id}`,['/']), {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        }).then((response) => {
-          console.log(response.status);
-          return response.json();
-        }).then((resJSON) => {
-            setBalance(resJSON.balance);
-        })
-      };
 
-    useEffect(() => {
-      (async () => {
-         const response = await fetch("https://api.mwis.pl/auth/user/", {
+    const Balance = async () => {
+        await fetch("".concat(`${BaseUrl}`, ['users/'],`${id}`), {
+          method: "GET",
           headers: {
             "Content-Type": "application/json",
           },
           credentials: "include",
-        })
-         const content = await response.json();
-         setId(content.pk);
-       })();
-      handleBalance().then(r => {});
+          }).then((response) => {
+            return response.json();
+          }).then((resJSON) => {
+              setBalance(resJSON.balance);
+              setIsLoading(false);
+          })
+        };
+
+    useEffect(() => {
+      UserInfo().then(r => {setId(r.pk);});
+      Balance().then(r => {});
      });
+
     return (
       <>
         <div className="main">

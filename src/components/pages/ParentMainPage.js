@@ -2,26 +2,14 @@ import React, {useEffect, useState} from "react";
 import "../../App.css";
 import Navigation from "../Navigation";
 import ParentMainPagePanel from "../ParentMainPagePanel";
+import { AuthUser } from "../../services/ApiCalls";
 
 
 function ParentMainPage() {
-  const BaseUrl = 'https://api.mwis.pl/'
   const [responseStatus, setResponseStatus] = useState(null);
 
   useEffect(() => {
-    (async () => {
-      let resStatus = 0;
-      await fetch("".concat(`${BaseUrl}`, ['auth/user']), {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      })
-        .then((res) => {
-          resStatus = res.status;
-          setResponseStatus(resStatus);
-        })
-    })();
+    AuthUser().then(r => setResponseStatus(r.status));
   });
 
   if (responseStatus === 200) {
