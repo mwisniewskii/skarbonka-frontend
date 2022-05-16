@@ -81,9 +81,9 @@ function ParentMainPagePanel() {
 
   return (
     <>
-      <div className="main">
-        <div className="leftSideContainer">
-          <div className="money">
+      <div className="main-p">
+        <div className="leftSideContainer-p">
+          <div className="money-p">
             Twoje środki na koncie <br />
             {isLoading ? (
               <LoadingSpinner spinnerSize="spin--medium" />
@@ -92,7 +92,7 @@ function ParentMainPagePanel() {
             )}
           </div>
 
-          <div className="deposit">
+          <div className="deposit-p">
             <Button
               buttonStyle="btn--primary"
               buttonSize="btn--small"
@@ -161,7 +161,7 @@ function ParentMainPagePanel() {
               </DialogActions>
             </Dialog>
           </div>
-          <div className="withdraw">
+          <div className="withdraw-p">
             <Button
               buttonStyle="btn--primary"
               buttonSize="btn--small"
@@ -231,7 +231,7 @@ function ParentMainPagePanel() {
             </Dialog>
           </div>
 
-          <div className="transaction-history">
+          <div className="transaction-history-p">
             <Button
               buttonStyle="btn--primary"
               buttonSize="btn--small"
@@ -241,7 +241,7 @@ function ParentMainPagePanel() {
             </Button>
           </div>
         </div>
-        <div className="rightSideContainer">
+        <div className="rightSideContainer-p">
           <Link to="/ParentRegisterKid" className="create-kid">
             <Button
               buttonStyle="btn--primary"
@@ -251,37 +251,37 @@ function ParentMainPagePanel() {
               Utwórz konto dziecka
             </Button>
           </Link>
-          <p className="title">Konta Twoich Dzieci</p>
-          <p className="title-col">Imię i nazwisko</p>
-          <p className="title-col">Saldo</p>
-          <p className="title-col">Kieszonkowe</p>
-          <p className="title-col">Transakcje</p>
-          <p className="title-col">Zarządzaj</p>
-          <div className="all-kids">
+          <p className="title-p">Konta Twoich Dzieci</p>
+          <p className="title-col-p">Imię i nazwisko</p>
+          <p className="title-col-p">Saldo</p>
+          <p className="title-col-p">Kieszonkowe</p>
+          <p className="title-col-p">Transakcje</p>
+          <p className="title-col-p">Zarządzaj</p>
+          <div className="all-kids-p">
             {isLoading ? (
               <LoadingSpinner spinnerSize="spin--medium" />
             ) : (
               users
                 .filter((owner) => owner.user_type !== 1)
                 .map((user) => (
-                  <div key={user.id} className="row">
-                    <p className="col">
+                  <div key={user.id} className="row-p">
+                    <p className="col-p">
                       {user.first_name} {user.last_name}
                     </p>
-                    <p className="col">{user.balance} zł</p>
-                    <Link to="/" className="col">
+                    <p className="col-p">{user.balance} zł</p>
+                    <Link to="/" className="col-p">
                       <FontAwesomeIcon
                         icon={faBook}
                         className="allowance-icon"
                       />
                     </Link>
-                    <Link to="/" className="col">
+                    <Link to="/" className="col-p">
                       <FontAwesomeIcon
                         icon={faBook}
                         className="transfers-icon"
                       />
                     </Link>
-                    <Link to="/" className="col">
+                    <Link to="/" className="col-p">
                       <FontAwesomeIcon
                         icon={faUserPen}
                         className="manage-icon"

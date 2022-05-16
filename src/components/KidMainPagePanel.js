@@ -1,9 +1,6 @@
 import React, {useEffect, useState} from "react";
-import { Link } from "react-router-dom";
 import "./KidMainPagePanel.css";
 import { Button } from "./Button";
-import { faUserPen, faBook} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {BaseUrl, UserInfo} from "../services/ApiCalls";
 import { LoadingSpinner } from "./LoadingSpinner";
 import {
@@ -68,9 +65,9 @@ function KidMainPagePanel() {
 
   return (
     <>
-      <div className="main">
-        <div className="leftSideContainer">
-          <p className="money">
+      <div className="main-k">
+        <div className="leftSideContainer-k">
+          <p className="money-k">
             Twoje środki na koncie <br />
             {isLoading ? (
               <LoadingSpinner spinnerSize="spin--medium" />
@@ -79,7 +76,7 @@ function KidMainPagePanel() {
             )}
           </p>
 
-          <div className="deposit">
+          <div className="deposit-k">
             <Button
               buttonStyle="btn--primary"
               buttonSize="btn--small"
@@ -148,7 +145,7 @@ function KidMainPagePanel() {
               </DialogActions>
             </Dialog>
           </div>
-          <div className="withdraw">
+          <div className="withdraw-k">
             <Button
               buttonStyle="btn--primary"
               buttonSize="btn--small"
@@ -224,10 +221,10 @@ function KidMainPagePanel() {
           </div>
         </div>
 
-        <div className="rightSideContainer">
-          <p className="title">Ostatnie wydarzenia na koncie</p>
-          <div className="all-kids">
-            <div className="row">
+        <div className="rightSideContainer-k">
+          <p className="title-k">Ostatnie wydarzenia na koncie</p>
+          <div className="events-k">
+            <div className="row-k">
               {/* <p className="col">Jan Kowalski</p>
               <p className="col">240 zł</p>
               <p className="col">150 zł</p>
