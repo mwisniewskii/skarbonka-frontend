@@ -1,25 +1,13 @@
 import React, {useEffect, useState} from "react";
 import ParentRegisterKidPanel from "../ParentRegisterKidPanel";
 import Navigation from "../Navigation";
+import { AuthUser } from "../../services/ApiCalls";
 
 function ParentRegisterKid() {
-  const BaseUrl = 'https://api.mwis.pl/'
   const [responseStatus, setResponseStatus] = useState(null);
 
   useEffect(() => {
-    (async () => {
-      let resStatus = 0;
-      await fetch("".concat(`${BaseUrl}`, ['auth/user']), {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      })
-        .then((res) => {
-          resStatus = res.status;
-          setResponseStatus(resStatus);
-        })
-    })();
+    AuthUser().then((r) => setResponseStatus(r.status));
   });
 
   if (responseStatus === 200) {
@@ -30,9 +18,7 @@ function ParentRegisterKid() {
       </>
     );
   } else {
-    return (
-      <p></p>
-    )
+    return <p></p>;
   }
 }
 

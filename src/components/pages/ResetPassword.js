@@ -1,6 +1,6 @@
 import React from "react";
 // import "../../App.css";
-import ResetPasswordPanel from "../ResetPasswordPanel";
+import ResetPasswordPanel from "../PasswordPanel/ResetPasswordPanel";
 
 function ResetPassword() {
   return (

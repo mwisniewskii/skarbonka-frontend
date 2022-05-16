@@ -2,39 +2,25 @@ import React, {useEffect, useState} from "react";
 import "../../App.css";
 import KidMainPagePanel from "../KidMainPagePanel";
 import Navigation from "../Navigation";
+import { AuthUser } from "../../services/ApiCalls";
 
-
-function ParentMainPage() {
+function KidMainPage() {
   const [responseStatus, setResponseStatus] = useState(null);
 
   useEffect(() => {
-    (async () => {
-      let resStatus = 0;
-      await fetch("https://api.mwis.pl/auth/user/", {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      })
-        .then((res) => {
-          resStatus = res.status;
-          setResponseStatus(resStatus);
-        })
-    })();
+    AuthUser().then((r) => setResponseStatus(r.status));
   });
 
   if (responseStatus === 200) {
     return (
       <>
-        <Navigation/>
-        <KidMainPagePanel/>
+        <Navigation />
+        <KidMainPagePanel />
       </>
     );
   } else {
-    return (
-      <p></p>
-    )
+    return <p></p>;
   }
 }
 
-export default ParentMainPage;
+export default KidMainPage;

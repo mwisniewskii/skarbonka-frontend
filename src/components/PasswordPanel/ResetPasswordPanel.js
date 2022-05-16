@@ -1,11 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Button } from "./Button";
+import { Button } from "../Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 import "./ResetPasswordPanel.css";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
+
+const PositiveMessage = () => (
+  <section class="popUp">
+    <div class="register201">
+      <p className="resetP200">E-mail z linkiem resetującym hasło został</p>
+      <p>wysłany na Twoją skrzynkę pocztową.</p>
+
+      <Link to="/">
+        <button className="reset200">Przejdź do strony głównej</button>
+      </Link>
+    </div>
+  </section>
+);
+
+const NegativeMessage = () => (
+  <p className="resetPassword400">Wygląda na to, że e-mail błędny.</p>
+);
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string()
@@ -14,6 +31,16 @@ const LoginSchema = Yup.object().shape({
 });
 
 const ResetPasswordPanel = () => {
+  const [responseStatus, setResponseStatus] = useState(null);
+
+  const displayMessage = () => {
+    if (responseStatus === 200) {
+      return <PositiveMessage />;
+    } else if (responseStatus === 400) {
+      return <NegativeMessage />;
+    }
+  };
+
   return (
     <>
       <main>
@@ -28,12 +55,21 @@ const ResetPasswordPanel = () => {
               }}
               validationSchema={LoginSchema}
               onSubmit={async (values) => {
-                await new Promise((r) => setTimeout(r, 500));
-                alert(JSON.stringify(values, null, 2));
+                let resStatus = 0;
+                await fetch("https://api.mwis.pl/auth/password/reset/", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(values, null, 2),
+                }).then((res) => {
+                  resStatus = res.status;
+                  setResponseStatus(resStatus);
+                });
               }}
             >
-              {({ errors, touched }) => (
-                <Form>
+              {({ errors, handleSubmit, touched }) => (
+                <Form onSubmit={handleSubmit}>
                   <Field
                     id="email"
                     name="email"
@@ -54,6 +90,7 @@ const ResetPasswordPanel = () => {
                 </Form>
               )}
             </Formik>
+            {displayMessage()}
             <div>
               <Link to="/loginPanel">
                 <button className="returnButton">

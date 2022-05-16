@@ -21,12 +21,11 @@ export const UserInfo = async () => {
 }
 
 export const FamilyUsers = async () => {
-   const response = await fetch("".concat(`${BaseUrl}`, ['users/']),  {
-       method: "GET",
-       headers: {
-         "Content-Type": "application/json",
-       },
-       credentials: "include",
-   })
+   const response = await fetch("".concat(`${BaseUrl}`, ["users/"]), {
+     headers: {
+       "Content-Type": "application/json",
+     },
+     credentials: "include",
+   });
    return await response.json();
 };

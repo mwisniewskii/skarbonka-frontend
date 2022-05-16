@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "./Button";
 import { Link, Navigate } from "react-router-dom";
 import "./LoginPanel.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 import { Formik, Field, Form, ErrorMessage } from "formik";
+import { UserInfo, BaseUrl } from "../services/ApiCalls";
 import * as Yup from "yup";
 
 const NegativeMessage = () => (
@@ -20,13 +21,41 @@ const LoginSchema = Yup.object().shape({
 });
 
 function LoginPanel() {
+  const [id, setId] = useState();
+  const [userType, setUserType] = useState();
   const [responseStatus, setResponseStatus] = useState(null);
 
+  const UserType = async () => {
+    await fetch("".concat(`${BaseUrl}`, ["users/"], `${id}`), {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((resJSON) => {
+        setUserType(resJSON.user_type);
+      });
+  };
+
+  useEffect(() => {
+    UserInfo().then((r) => {
+      setId(r.pk);
+    });
+    if (id) {
+      UserType().then((r) => {});
+    }
+  });
+
   const displayMessage = () => {
-    if (responseStatus === 200) {
-      return <Navigate to="/ParentMainPage" />;
-    } else if (responseStatus === 400) {
+    if (responseStatus === 400) {
       return <NegativeMessage />;
+    } else if (userType === 1) {
+      return <Navigate to="/ParentMainPage" />;
+    } else if (userType === 2) {
+      return <Navigate to="/KidMainPage" />;
     }
   };
 

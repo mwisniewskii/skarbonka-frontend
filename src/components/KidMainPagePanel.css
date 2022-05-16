@@ -10,7 +10,6 @@
 .leftSideContainer{
   text-align: center;
   font-size: 24px;
-  position: static;
   width: 40%;
   height: 90%;
   margin: auto 15px auto 10%;
@@ -28,6 +27,10 @@
   margin: 50%;
 }
 
+.big-box{
+  margin-top: 25px;
+}
+
 .main-page{
   border-bottom: 2px solid  #FFC200;
 }
@@ -35,13 +38,16 @@
 .rightSideContainer{
   text-align: center;
   font-size: 24px;
-  position: static;
   width: 100%;
   height: 90%;
   margin: auto 10% auto 15px;
   background: #FFFCFC;
   box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.3);
   border-radius: 10px;
+}
+
+.rightSideContainer .title{
+  margin:30px 200px 0;
 }
 
 .create-kid{
@@ -56,8 +62,6 @@
   display: inline-block;
   width: 70%;
   height: 45px;
-  font-style: normal;
-  font-weight: 400;
   font-size: 24px;
   line-height: 28px;
   text-align: center;
@@ -66,8 +70,6 @@
 .all-kids{
   display: flex;
   margin: 2% 5% 2% 5%;
-  font-style: normal;
-  font-weight: 400;
   font-size: 20px;
   line-height: 23px;
 }
@@ -85,4 +87,4 @@
   width: 190px;
   height: 25px;
   margin-top: 18px;
-}
+} 

@@ -49,6 +49,7 @@
   margin: 20px 0 0 0;
 }
 
+.btn--small:hover,
 .btn--large:hover,
 .btn--medium:hover {
   transition: all 0.3s ease-out;

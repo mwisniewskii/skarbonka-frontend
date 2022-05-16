@@ -18,7 +18,7 @@
   align-items: center;
 }
 
-.main-page, .transfers, .credits, .loans, .user-name, .logout{
+.main-page, .transfers, .loans, .user-name, .logout{
   display: flex;
   justify-content: center;
   color: black;
