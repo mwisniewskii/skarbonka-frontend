@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./ParentMainPagePanel.css";
 import { Button } from "./Button";
@@ -12,7 +12,7 @@ import {
   DialogTitle,
 } from "@mui/material";
 import { ErrorMessage, Field, Form, Formik } from "formik";
-import { UserInfo, FamilyUsers, BaseUrl } from "../services/ApiCalls";
+import { UserInfo, BaseUrl } from "../services/ApiCalls";
 import toast, { Toaster } from "react-hot-toast";
 import * as Yup from "yup";
 
@@ -20,10 +20,11 @@ function ParentMainPagePanel() {
   const [id, setId] = useState();
   const [balance, setBalance] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoading2, setIsLoading2] = useState(true);
   const [users, setUsers] = useState([]);
   const [openDeposit, setOpenDeposit] = useState(false);
   const [openWithdraw, setOpenWithdraw] = useState(false);
-  const [responseStatus, setResponseStatus] = useState(null);
+  // const [responseStatus, setResponseStatus] = useState(null);
 
   const handleOpenDeposit = () => {
     setOpenDeposit(true);
@@ -38,9 +39,8 @@ function ParentMainPagePanel() {
     setOpenWithdraw(false);
   };
 
-  const Balance = async () => {
+  const Balance = useCallback(async () => {
     await fetch("".concat(`${BaseUrl}`, ["users/"], `${id}`), {
-      method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
@@ -53,25 +53,34 @@ function ParentMainPagePanel() {
         setBalance(resJSON.balance);
         setIsLoading(false);
       });
-  };
+  }, [id]);
 
-  // const IdUserInfo = () =>{
-  //   UserInfo().then((r) => {
-  //     setId(r.pk);
-  // }
+  const FamilyUsers = useCallback(async () => {
+    await fetch("".concat(`${BaseUrl}`, ["users/"]), {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((resJSON) => {
+        setUsers(resJSON);
+        setIsLoading2(false);
+      });
+  }, []);
 
   useEffect(() => {
     UserInfo().then((r) => {
       setId(r.pk);
     });
+    FamilyUsers();
+
     if (id) {
-      // Balance().then((r) => {});
       Balance();
-      FamilyUsers().then((r) => {
-        setUsers(r);
-      });
     }
-  });
+  }, [Balance, id, FamilyUsers]);
 
   const Money = Yup.object().shape({
     amount: Yup.number("Kwota musi być liczbą!")
@@ -117,8 +126,8 @@ function ParentMainPagePanel() {
                       credentials: "include",
                       body: JSON.stringify(values, null, 2),
                     }).then((res) => {
-                      setResponseStatus(res.status);
-                      if (responseStatus === 201) {
+                      if (res.status === 201) {
+                        Balance();
                         return toast.success(
                           "".concat(
                             "Udało się wpłacić ",
@@ -126,7 +135,7 @@ function ParentMainPagePanel() {
                             " zł!"
                           )
                         );
-                      } else if (responseStatus === 400) {
+                      } else if (res.status === 400) {
                         return toast.error("Nie udało się wpłacić pieniędzy!");
                       }
                     });
@@ -186,8 +195,8 @@ function ParentMainPagePanel() {
                       credentials: "include",
                       body: JSON.stringify(values, null, 2),
                     }).then((res) => {
-                      setResponseStatus(res.status);
-                      if (responseStatus === 201) {
+                      if (res.status === 201) {
+                        Balance();
                         return toast.success(
                           "".concat(
                             "Udało się wypłacić ",
@@ -195,7 +204,7 @@ function ParentMainPagePanel() {
                             " zł!"
                           )
                         );
-                      } else if (responseStatus === 400) {
+                      } else if (res.status === 400) {
                         return toast.error("Nie udało się wypłacić pieniędzy!");
                       }
                     });
@@ -258,7 +267,7 @@ function ParentMainPagePanel() {
           <p className="title-col-p">Transakcje</p>
           <p className="title-col-p">Zarządzaj</p>
           <div className="all-kids-p">
-            {isLoading ? (
+            {isLoading2 ? (
               <LoadingSpinner spinnerSize="spin--medium" />
             ) : (
               users

@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import "./KidMainPagePanel.css";
 import { Button } from "./Button";
-import {BaseUrl, UserInfo} from "../services/ApiCalls";
+import { BaseUrl, UserInfo } from "../services/ApiCalls";
 import { LoadingSpinner } from "./LoadingSpinner";
 import {
   Dialog,
@@ -17,9 +17,11 @@ function KidMainPagePanel() {
   const [id, setId] = useState();
   const [balance, setBalance] = useState();
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoading2, setIsLoading2] = useState(true);
+  const [users, setUsers] = useState([]);
   const [openDeposit, setOpenDeposit] = useState(false);
   const [openWithdraw, setOpenWithdraw] = useState(false);
-  const [responseStatus, setResponseStatus] = useState(null);
+  // const [responseStatus, setResponseStatus] = useState(null);
 
   const handleOpenDeposit = () => {
     setOpenDeposit(true);
@@ -34,7 +36,7 @@ function KidMainPagePanel() {
     setOpenWithdraw(false);
   };
 
-  const Balance = async () => {
+  const Balance = useCallback(async () => {
     await fetch("".concat(`${BaseUrl}`, ["users/"], `${id}`), {
       headers: {
         "Content-Type": "application/json",
@@ -48,14 +50,34 @@ function KidMainPagePanel() {
         setBalance(resJSON.balance);
         setIsLoading(false);
       });
-  };
+  }, [id]);
+
+  const FamilyUsers = useCallback(async () => {
+    await fetch("".concat(`${BaseUrl}`, ["users/"]), {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((resJSON) => {
+        setUsers(resJSON);
+        setIsLoading2(false);
+      });
+  }, []);
 
   useEffect(() => {
     UserInfo().then((r) => {
       setId(r.pk);
     });
-    Balance().then((r) => {});
-  });
+    FamilyUsers();
+
+    if (id) {
+      Balance();
+    }
+  }, [Balance, id, FamilyUsers]);
 
   const Money = Yup.object().shape({
     amount: Yup.number("Kwota musi być liczbą!")
@@ -67,14 +89,14 @@ function KidMainPagePanel() {
     <>
       <div className="main-k">
         <div className="leftSideContainer-k">
-          <p className="money-k">
+          <div className="money-k">
             Twoje środki na koncie <br />
             {isLoading ? (
               <LoadingSpinner spinnerSize="spin--medium" />
             ) : (
               "".concat(`${balance}`, " zł")
             )}
-          </p>
+          </div>
 
           <div className="deposit-k">
             <Button
@@ -101,8 +123,8 @@ function KidMainPagePanel() {
                       credentials: "include",
                       body: JSON.stringify(values, null, 2),
                     }).then((res) => {
-                      setResponseStatus(res.status);
-                      if (responseStatus === 201) {
+                      if (res.status === 201) {
+                        Balance();
                         return toast.success(
                           "".concat(
                             "Udało się wpłacić ",
@@ -110,7 +132,7 @@ function KidMainPagePanel() {
                             " zł!"
                           )
                         );
-                      } else if (responseStatus === 400) {
+                      } else if (res.status === 400) {
                         return toast.error("Nie udało się wpłacić pieniędzy!");
                       }
                     });
@@ -170,8 +192,8 @@ function KidMainPagePanel() {
                       credentials: "include",
                       body: JSON.stringify(values, null, 2),
                     }).then((res) => {
-                      setResponseStatus(res.status);
-                      if (responseStatus === 201) {
+                      if (res.status === 201) {
+                        Balance();
                         return toast.success(
                           "".concat(
                             "Udało się wypłacić ",
@@ -179,7 +201,7 @@ function KidMainPagePanel() {
                             " zł!"
                           )
                         );
-                      } else if (responseStatus === 400) {
+                      } else if (res.status === 400) {
                         return toast.error("Nie udało się wypłacić pieniędzy!");
                       }
                     });
@@ -217,7 +239,19 @@ function KidMainPagePanel() {
 
           <div className="big-box">
             <p className="parent">RODZIC</p>
-            <p className="name">Marian Kowalski</p>
+            {isLoading2 ? (
+              <LoadingSpinner spinnerSize="spin--medium" />
+            ) : (
+              users
+                .filter((owner) => owner.user_type === 1)
+                .map((user) => (
+                  <div key={user.id} className="parentBox">
+                    <p>
+                      {user.first_name} {user.last_name}
+                    </p>
+                  </div>
+                ))
+            )}
           </div>
         </div>
 
