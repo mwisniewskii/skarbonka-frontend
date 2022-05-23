@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./ParentMainPagePanel.css";
 import { Button } from "./Button";
-import { faUserPen, faBook } from "@fortawesome/free-solid-svg-icons";
+import {faUserPen, faBook, faSackDollar} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LoadingSpinner } from "./LoadingSpinner";
 import {
@@ -11,20 +11,25 @@ import {
   DialogContent,
   DialogTitle,
 } from "@mui/material";
-import { ErrorMessage, Field, Form, Formik } from "formik";
+import {ErrorMessage, Field, Form, Formik, useFormik} from "formik";
 import { UserInfo, BaseUrl } from "../services/ApiCalls";
 import toast, { Toaster } from "react-hot-toast";
 import * as Yup from "yup";
+import {MenuItem, TextField} from "@material-ui/core";
 
 function ParentMainPagePanel() {
   const [id, setId] = useState();
   const [balance, setBalance] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoading2, setIsLoading2] = useState(true);
+  const [isLoadingAllowance, setIsLoadingAllowance] = useState(true);
   const [users, setUsers] = useState([]);
+  const [user, setUser] = useState([]);
+  const [userAllowance, setUsersAllowance] = useState([]);
   const [openDeposit, setOpenDeposit] = useState(false);
   const [openWithdraw, setOpenWithdraw] = useState(false);
-  // const [responseStatus, setResponseStatus] = useState(null);
+  const [openAllowance, setOpenAllowance] = useState(false);
+  const [responseStatus, setResponseStatus] = useState(null);
 
   const handleOpenDeposit = () => {
     setOpenDeposit(true);
@@ -38,6 +43,13 @@ function ParentMainPagePanel() {
   const handleCloseWithdraw = () => {
     setOpenWithdraw(false);
   };
+  const handleOpenAllowance = () => {
+    setOpenAllowance(true);
+  };
+  const handleCloseAllowance = () => {
+    setOpenAllowance(false);
+  };
+
 
   const Balance = useCallback(async () => {
     await fetch("".concat(`${BaseUrl}`, ["users/"], `${id}`), {
@@ -71,6 +83,25 @@ function ParentMainPagePanel() {
       });
   }, []);
 
+  const handleUserAllowance = useCallback(async (user) => {
+    await fetch("".concat(`${BaseUrl}`, ["allowances/"]),{
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((resJSON) => {
+        setUsersAllowance(resJSON.filter((allowance) => user.id === allowance.child));
+        console.log(userAllowance);
+        setIsLoadingAllowance(false);
+        setUser(user);
+      });
+  }, [userAllowance]);
+
   useEffect(() => {
     UserInfo().then((r) => {
       setId(r.pk);
@@ -86,6 +117,44 @@ function ParentMainPagePanel() {
     amount: Yup.number("Kwota musi być liczbą!")
       .positive("Kwota musi być większa od 0!")
       .required("Kwota jest wymagana!"),
+  });
+
+  const allowanceValidation = Yup.object().shape({
+    amount: Yup.number("Kwota musi być liczbą!")
+      .positive("Kwota musi być większa od 0!")
+      .required("Kwota jest wymagana!"),
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      child: userAllowance.child,
+      amount: userAllowance.amount,
+      frequency: userAllowance.frequency,
+    },
+    validationSchema: allowanceValidation,
+    onSubmit: async (values) => {
+      await fetch("".concat(`${BaseUrl}`, ["allowances/"]), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(values, null, 2),
+      }).then((res) => {
+        setResponseStatus(res.status);
+        if (responseStatus === 201) {
+          return toast.success(
+            "".concat(
+              "Udało się ustalić kieszonkowe na ",
+              `${values.amount}`,
+              " zł.",
+            )
+          );
+        } else if (responseStatus === 400) {
+          return toast.error("Nie udało się ustalić kieszonkowego!");
+        }
+      });
+    },
   });
 
   return (
@@ -272,18 +341,79 @@ function ParentMainPagePanel() {
             ) : (
               users
                 .filter((owner) => owner.user_type !== 1)
-                .map((user) => (
-                  <div key={user.id} className="row-p">
+                .map((kid) => (
+                  <div key={kid.id} className="row-p">
                     <p className="col-p">
-                      {user.first_name} {user.last_name}
+                      {kid.first_name} {kid.last_name}
                     </p>
-                    <p className="col-p">{user.balance} zł</p>
-                    <Link to="/" className="col-p">
+                    <p className="col-p">{kid.balance} zł</p>
                       <FontAwesomeIcon
-                        icon={faBook}
-                        className="allowance-icon"
+                        icon={faSackDollar}
+                        className="col-p"
+                        onClick={() => {
+                          handleOpenAllowance();
+                          handleUserAllowance(kid);
+                        }}
                       />
-                    </Link>
+                      <Dialog
+                        open={openAllowance}
+                        onClose={() => {
+                          handleCloseAllowance();
+                          setIsLoadingAllowance(true);
+                        }}
+                      >
+                        {isLoadingAllowance ? (<LoadingSpinner spinnerSize="spin-medium"/>) :
+                          (
+                          <>
+                            <DialogTitle>
+                              Kieszonkowe
+                            </DialogTitle>
+                            <DialogTitle>
+                              {user.first_name} {user.last_name}
+                            </DialogTitle>
+                            <DialogContent>
+                              <form onSubmit={formik.handleSubmit} className="allowance-form">
+                                <TextField
+                                  fullWidth
+                                  id="amount"
+                                  name="amount"
+                                  label="Kwota"
+                                  value={formik.values.amount}
+                                  onChange={formik.handleChange}
+                                  error={formik.touched.amount && Boolean(formik.errors.amount)}
+                                  helperText={formik.touched.amount && formik.errors.amount}
+                                />
+                                <TextField
+                                  id="outlined-select-currency"
+                                  select
+                                  label="Czestotliwość"
+                                  value={formik.values.frequency}
+                                  onChange={formik.handleChange}
+                                  error={formik.touched.frequency && Boolean(formik.errors.frequency)}
+                                  helperText={formik.touched.frequency && formik.errors.frequency}
+                                >
+                                  <MenuItem value={1}>
+                                    Codziennie
+                                  </MenuItem>
+                                  <MenuItem value={2}>
+                                    Co tydzien
+                                  </MenuItem>
+                                  <MenuItem value={3}>
+                                    Co miesiąc
+                                  </MenuItem>
+                                </TextField>
+                                <Button
+                                  buttonStyle="btn--primary"
+                                  buttonSize="btn--small"
+                                  type="submit"
+                                >
+                                  Zapisz
+                                </Button>
+                              </form>
+                            </DialogContent>
+                          </>
+                          )}
+                      </Dialog>
                     <Link to="/" className="col-p">
                       <FontAwesomeIcon
                         icon={faBook}

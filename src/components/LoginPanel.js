@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "./Button";
-import { Link, Navigate } from "react-router-dom";
+import {Link, Navigate} from "react-router-dom";
 import "./LoginPanel.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft } from "@fortawesome/free-solid-svg-icons";
@@ -9,7 +9,7 @@ import { UserInfo, BaseUrl } from "../services/ApiCalls";
 import * as Yup from "yup";
 
 const NegativeMessage = () => (
-  <p className="login400">Wygląda na to, że e-mail lub hasło jest złe.</p>
+  <p className="login400">Podano nieprawidłowy adres e-mail lub hasło.</p>
 );
 
 const LoginSchema = Yup.object().shape({
