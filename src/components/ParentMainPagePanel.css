@@ -1,0 +1,103 @@
+.main-p {
+  position: relative;
+  width: 100%;
+  height: 720px;
+  background: #f2f2f2;
+  margin: auto;
+  display: flex;
+}
+
+.leftSideContainer-p {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 24px;
+  width: 40%;
+  height: 90%;
+  margin: auto 15px auto 10%;
+  background: #fffcfc;
+  border-radius: 40px;
+  filter: drop-shadow(0px -2px 5px rgba(0, 0, 0, 0.25));
+}
+
+.money-p {
+  display: flex;
+  margin-top: 24px;
+  line-height: 48px;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+}
+
+.transaction-history-p {
+  margin-top: 50%;
+}
+
+.main-page {
+  border-bottom: 2px solid #ffc200;
+}
+
+.rightSideContainer-p {
+  text-align: center;
+  font-size: 24px;
+  width: 100%;
+  height: 90%;
+  margin: auto 10% auto 15px;
+  background: #fffcfc;
+  box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+}
+
+.create-kid {
+  display: inline-block;
+  text-decoration: none;
+  width: 235px;
+  height: 45px;
+  margin-left: 2%;
+}
+
+.title-p {
+  display: inline-block;
+  width: 70%;
+  height: 45px;
+  padding-right: 23%;
+  font-size: 24px;
+  line-height: 28px;
+  text-align: center;
+}
+
+.title-col-p {
+  display: inline-block;
+  width: 190px;
+  height: 25px;
+  font-size: 20px;
+  line-height: 23px;
+  text-align: center;
+}
+
+
+.all-kids-p {
+  display: flex;
+  flex-shrink: 1;
+  flex-direction: column;
+  margin: 2% 5% 2% 5%;
+  font-size: 20px;
+  line-height: 23px;
+}
+
+.row-p {
+  flex-shrink: 1;
+  background: #ffffff;
+  border: 1px solid #ffc200;
+  box-sizing: border-box;
+  width: 100%;
+  height: 55px;
+  margin-bottom: 10px;
+}
+
+.col-p {
+  display: inline-block;
+  width: 190px;
+  height: 25px;
+  margin-top: 18px;
+} 

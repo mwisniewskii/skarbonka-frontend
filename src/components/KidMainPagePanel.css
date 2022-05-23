@@ -1,0 +1,98 @@
+.main-k{
+  position: relative;
+  width: 100%;
+  height: 720px;
+  background: #F2F2F2;
+  margin: auto;
+  display: flex;
+}
+
+.leftSideContainer-k{
+  text-align: center;
+  font-size: 24px;
+  width: 40%;
+  height: 90%;
+  margin: auto 15px auto 10%;
+  background: #FFFCFC;
+  border-radius: 40px;
+  filter: drop-shadow(0px -2px 5px rgba(0, 0, 0, 0.25));
+}
+
+.money-k{
+  display: flex;
+  margin-top: 24px;
+  line-height: 48px;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+}
+
+.blank{
+  margin: 50%;
+}
+
+.big-box{
+  margin-top: 25px;
+}
+
+.main-page{
+  border-bottom: 2px solid  #FFC200;
+}
+
+.rightSideContainer-k{
+  text-align: center;
+  font-size: 24px;
+  width: 100%;
+  height: 90%;
+  margin: auto 10% auto 15px;
+  background: #FFFCFC;
+  box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+}
+
+.title-k{
+  display: inline-block;
+  width: 100%;
+  height: 45px;
+  font-size: 24px;
+  line-height: 28px;
+  text-align: center;
+  padding-top: 20px;
+  padding-right: 0;
+}
+
+.event-k{
+  display: flex;
+  margin: 2% 5% 2% 5%;
+  font-size: 20px;
+  line-height: 23px;
+}
+
+.row-k{
+  background: #FFFFFF;
+  border: 1px solid #FFC200;
+  box-sizing: border-box;
+  width: 100%;
+  height: 55px;
+}
+
+.col-k{
+  display: inline-block;
+  width: 190px;
+  height: 25px;
+  margin-top: 18px;
+} 
+
+.big-box{
+  padding: 20px 0;
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+  border: 2px solid #FFC200; 
+  border-radius: 10px;
+}
+
+.parentBox{
+  font-weight: 700;
+}
