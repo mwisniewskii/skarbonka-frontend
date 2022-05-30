@@ -5,17 +5,16 @@ import { Button } from "./Button";
 import {faUserPen, faBook, faSackDollar} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LoadingSpinner } from "./LoadingSpinner";
-import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-} from "@mui/material";
-import {ErrorMessage, Field, Form, Formik, useFormik} from "formik";
-import { UserInfo, BaseUrl } from "../services/ApiCalls";
+import { Dialog, DialogActions, DialogContent, DialogTitle, Stack } from "@mui/material";
+import { ErrorMessage, Field, Form, Formik, useFormik} from "formik";
+import { UserInfo, BaseUrl, } from "../services/ApiCalls";
 import toast, { Toaster } from "react-hot-toast";
 import * as Yup from "yup";
-import {MenuItem, TextField} from "@material-ui/core";
+import { MenuItem, TextField} from "@material-ui/core";
+import { DesktopDatePicker, TimePicker } from "@mui/x-date-pickers";
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import {doNothing} from "@mui/x-date-pickers/internals/utils/utils";
 
 function ParentMainPagePanel() {
   const [id, setId] = useState();
@@ -30,6 +29,8 @@ function ParentMainPagePanel() {
   const [openWithdraw, setOpenWithdraw] = useState(false);
   const [openAllowance, setOpenAllowance] = useState(false);
   const [responseStatus, setResponseStatus] = useState(null);
+  const [time, setTime] = useState(new Date());
+  // const [date, setDate] = useState(null);
 
   const handleOpenDeposit = () => {
     setOpenDeposit(true);
@@ -95,12 +96,16 @@ function ParentMainPagePanel() {
         return response.json();
       })
       .then((resJSON) => {
-        setUsersAllowance(resJSON.filter((allowance) => user.id === allowance.child));
-        console.log(userAllowance);
+        let temp = resJSON.filter((allowance) => allowance.child === user.id)
+        if(temp.length > 1) {
+          setUsersAllowance(temp[temp.length-1]);
+        } else {
+          setUsersAllowance(temp);
+        }
         setIsLoadingAllowance(false);
         setUser(user);
       });
-  }, [userAllowance]);
+  }, []);
 
   useEffect(() => {
     UserInfo().then((r) => {
@@ -125,11 +130,14 @@ function ParentMainPagePanel() {
       .required("Kwota jest wymagana!"),
   });
 
-  const formik = useFormik({
+  const formularz = useFormik({
     initialValues: {
-      child: userAllowance.child,
-      amount: userAllowance.amount,
-      frequency: userAllowance.frequency,
+      child: "",
+      amount: "",
+      frequency: "",
+      execute_time: "",
+      day_of_month: new Date().getDay(),
+      day_of_week: new Date().getDay(),
     },
     validationSchema: allowanceValidation,
     onSubmit: async (values) => {
@@ -156,6 +164,28 @@ function ParentMainPagePanel() {
       });
     },
   });
+  // console.log(userAllowance, user.id, formularz.values.child, formularz.values.execute_time)
+  const weekDay = () => {
+    return <DesktopDatePicker
+        label="Dzien tygodnia"
+        inputFormat="MM/dd/yyyy"
+        value={formularz.values.day_of_week}
+        onChange={formularz.handleChange}
+        renderInput={(params) => <TextField {...params} />}
+       />
+  }
+
+  const monthDay = () => {
+    return <DesktopDatePicker
+        label="Dzien miesiąca"
+        inputFormat="MM/dd/yyyy"
+        value={formularz.values.day_of_month}
+        onChange={formularz.handleChange}
+        renderInput={(params) => <TextField {...params} />}
+      />
+  }
+
+
 
   return (
     <>
@@ -178,7 +208,7 @@ function ParentMainPagePanel() {
             >
               Wpłać pieniądze
             </Button>
-            <Dialog open={openDeposit} onClose={handleCloseDeposit}>
+            <Dialog open={openDeposit} onClose={handleCloseDeposit}>,
               <DialogTitle>Wpłać pieniądze na konto</DialogTitle>
               <DialogContent>
                 <Formik
@@ -372,25 +402,27 @@ function ParentMainPagePanel() {
                               {user.first_name} {user.last_name}
                             </DialogTitle>
                             <DialogContent>
-                              <form onSubmit={formik.handleSubmit} className="allowance-form">
+                              <form onSubmit={formularz.handleSubmit} className="allowance-form">
                                 <TextField
                                   fullWidth
                                   id="amount"
                                   name="amount"
                                   label="Kwota"
-                                  value={formik.values.amount}
-                                  onChange={formik.handleChange}
-                                  error={formik.touched.amount && Boolean(formik.errors.amount)}
-                                  helperText={formik.touched.amount && formik.errors.amount}
+                                  type="number"
+                                  value={formularz.values.amount}
+                                  onChange={formularz.handleChange}
+                                  error={formularz.touched.amount && Boolean(formularz.errors.amount)}
+                                  helperText={formularz.touched.amount && formularz.errors.amount}
                                 />
                                 <TextField
                                   id="outlined-select-currency"
+                                  name="frequency"
                                   select
                                   label="Czestotliwość"
-                                  value={formik.values.frequency}
-                                  onChange={formik.handleChange}
-                                  error={formik.touched.frequency && Boolean(formik.errors.frequency)}
-                                  helperText={formik.touched.frequency && formik.errors.frequency}
+                                  value={formularz.values.frequency}
+                                  onChange={formularz.handleChange}
+                                  error={formularz.touched.frequency && Boolean(formularz.errors.frequency)}
+                                  helperText={formularz.touched.frequency && formularz.errors.frequency}
                                 >
                                   <MenuItem value={1}>
                                     Codziennie
@@ -402,6 +434,25 @@ function ParentMainPagePanel() {
                                     Co miesiąc
                                   </MenuItem>
                                 </TextField>
+                                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                  <Stack spacing={3}>
+                                    <TimePicker
+                                      label="Godzina wykonania"
+                                      value={time}
+                                      onChange={(newValue) => {
+                                        setTime(newValue);
+                                      }}
+                                      renderInput={(params) => <TextField {...params} />}
+                                      ampm = {false}
+                                      closeOnSelect = {true}
+                                    />
+                                  </Stack>
+                                  {formularz.values.frequency === 2 ?
+                                    weekDay() :
+                                   formularz.values.frequency === 3 ?
+                                    monthDay() : doNothing()
+                                  }
+                                </LocalizationProvider>
                                 <Button
                                   buttonStyle="btn--primary"
                                   buttonSize="btn--small"
