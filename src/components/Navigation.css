@@ -30,6 +30,14 @@
   height: 45px;
 }
 
+.main-page:hover, .transfers:hover, .loans:hover, .logout:hover{
+  color: #ffc200;
+}
+
 .logout-icon{
   margin-right: 5px;
+}
+
+.bottomBorder {
+  border-bottom: 2px solid #ffc200;
 }

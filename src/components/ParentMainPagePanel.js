@@ -166,26 +166,28 @@ function ParentMainPagePanel() {
   });
   // console.log(userAllowance, user.id, formularz.values.child, formularz.values.execute_time)
   const weekDay = () => {
-    return <DesktopDatePicker
-        label="Dzien tygodnia"
+    return (
+      <DesktopDatePicker
+        label="Dzień tygodnia"
         inputFormat="MM/dd/yyyy"
         value={formularz.values.day_of_week}
         onChange={formularz.handleChange}
         renderInput={(params) => <TextField {...params} />}
-       />
-  }
+      />
+    );
+  };
 
   const monthDay = () => {
-    return <DesktopDatePicker
-        label="Dzien miesiąca"
+    return (
+      <DesktopDatePicker
+        label="Dzień miesiąca"
         inputFormat="MM/dd/yyyy"
         value={formularz.values.day_of_month}
         onChange={formularz.handleChange}
         renderInput={(params) => <TextField {...params} />}
       />
-  }
-
-
+    );
+  };
 
   return (
     <>
@@ -208,7 +210,7 @@ function ParentMainPagePanel() {
             >
               Wpłać pieniądze
             </Button>
-            <Dialog open={openDeposit} onClose={handleCloseDeposit}>,
+            <Dialog open={openDeposit} onClose={handleCloseDeposit}>
               <DialogTitle>Wpłać pieniądze na konto</DialogTitle>
               <DialogContent>
                 <Formik
@@ -235,6 +237,7 @@ function ParentMainPagePanel() {
                           )
                         );
                       } else if (res.status === 400) {
+                        Balance();
                         return toast.error("Nie udało się wpłacić pieniędzy!");
                       }
                     });
@@ -304,6 +307,7 @@ function ParentMainPagePanel() {
                           )
                         );
                       } else if (res.status === 400) {
+                        Balance();
                         return toast.error("Nie udało się wypłacić pieniędzy!");
                       }
                     });
@@ -377,101 +381,113 @@ function ParentMainPagePanel() {
                       {kid.first_name} {kid.last_name}
                     </p>
                     <p className="col-p">{kid.balance} zł</p>
-                      <FontAwesomeIcon
-                        icon={faSackDollar}
-                        className="col-p"
-                        onClick={() => {
-                          handleOpenAllowance();
-                          handleUserAllowance(kid);
-                        }}
-                      />
-                      <Dialog
-                        open={openAllowance}
-                        onClose={() => {
-                          handleCloseAllowance();
-                          setIsLoadingAllowance(true);
-                        }}
-                      >
-                        {isLoadingAllowance ? (<LoadingSpinner spinnerSize="spin-medium"/>) :
-                          (
-                          <>
-                            <DialogTitle>
-                              Kieszonkowe
-                            </DialogTitle>
-                            <DialogTitle>
-                              {user.first_name} {user.last_name}
-                            </DialogTitle>
-                            <DialogContent>
-                              <form onSubmit={formularz.handleSubmit} className="allowance-form">
-                                <TextField
-                                  fullWidth
-                                  id="amount"
-                                  name="amount"
-                                  label="Kwota"
-                                  type="number"
-                                  value={formularz.values.amount}
-                                  onChange={formularz.handleChange}
-                                  error={formularz.touched.amount && Boolean(formularz.errors.amount)}
-                                  helperText={formularz.touched.amount && formularz.errors.amount}
-                                />
-                                <TextField
-                                  id="outlined-select-currency"
-                                  name="frequency"
-                                  select
-                                  label="Czestotliwość"
-                                  value={formularz.values.frequency}
-                                  onChange={formularz.handleChange}
-                                  error={formularz.touched.frequency && Boolean(formularz.errors.frequency)}
-                                  helperText={formularz.touched.frequency && formularz.errors.frequency}
-                                >
-                                  <MenuItem value={1}>
-                                    Codziennie
-                                  </MenuItem>
-                                  <MenuItem value={2}>
-                                    Co tydzien
-                                  </MenuItem>
-                                  <MenuItem value={3}>
-                                    Co miesiąc
-                                  </MenuItem>
-                                </TextField>
-                                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                  <Stack spacing={3}>
-                                    <TimePicker
-                                      label="Godzina wykonania"
-                                      value={time}
-                                      onChange={(newValue) => {
-                                        setTime(newValue);
-                                      }}
-                                      renderInput={(params) => <TextField {...params} />}
-                                      ampm = {false}
-                                      closeOnSelect = {true}
-                                    />
-                                  </Stack>
-                                  {formularz.values.frequency === 2 ?
-                                    weekDay() :
-                                   formularz.values.frequency === 3 ?
-                                    monthDay() : doNothing()
-                                  }
-                                </LocalizationProvider>
-                                <Button
-                                  buttonStyle="btn--primary"
-                                  buttonSize="btn--small"
-                                  type="submit"
-                                >
-                                  Zapisz
-                                </Button>
-                              </form>
-                            </DialogContent>
-                          </>
-                          )}
-                      </Dialog>
-                    <Link to="/" className="col-p">
+                    <FontAwesomeIcon
+                      icon={faSackDollar}
+                      className="col-p"
+                      onClick={() => {
+                        handleOpenAllowance();
+                        handleUserAllowance(kid);
+                      }}
+                    />
+                    <Dialog
+                      open={openAllowance}
+                      onClose={() => {
+                        handleCloseAllowance();
+                        setIsLoadingAllowance(true);
+                      }}
+                    >
+                      {isLoadingAllowance ? (
+                        <LoadingSpinner spinnerSize="spin-medium" />
+                      ) : (
+                        <>
+                          <DialogTitle>Kieszonkowe</DialogTitle>
+                          <DialogTitle>
+                            {user.first_name} {user.last_name}
+                          </DialogTitle>
+                          <DialogContent>
+                            <form
+                              onSubmit={formularz.handleSubmit}
+                              className="allowance-form"
+                            >
+                              <TextField
+                                fullWidth
+                                id="amount"
+                                name="amount"
+                                label="Kwota"
+                                type="number"
+                                value={formularz.values.amount}
+                                onChange={formularz.handleChange}
+                                error={
+                                  formularz.touched.amount &&
+                                  Boolean(formularz.errors.amount)
+                                }
+                                helperText={
+                                  formularz.touched.amount &&
+                                  formularz.errors.amount
+                                }
+                              />
+                              <TextField
+                                id="outlined-select-currency"
+                                name="frequency"
+                                select
+                                label="Częstotliwość"
+                                value={formularz.values.frequency}
+                                onChange={formularz.handleChange}
+                                error={
+                                  formularz.touched.frequency &&
+                                  Boolean(formularz.errors.frequency)
+                                }
+                                helperText={
+                                  formularz.touched.frequency &&
+                                  formularz.errors.frequency
+                                }
+                              >
+                                <MenuItem value={1}>Codziennie</MenuItem>
+                                <MenuItem value={2}>Co tydzień</MenuItem>
+                                <MenuItem value={3}>Co miesiąc</MenuItem>
+                              </TextField>
+                              <LocalizationProvider
+                                dateAdapter={AdapterDateFns}
+                              >
+                                <Stack spacing={3}>
+                                  <TimePicker
+                                    label="Godzina wykonania"
+                                    value={time}
+                                    onChange={(newValue) => {
+                                      setTime(newValue);
+                                    }}
+                                    renderInput={(params) => (
+                                      <TextField {...params} />
+                                    )}
+                                    ampm={false}
+                                    closeOnSelect={true}
+                                  />
+                                </Stack>
+                                {formularz.values.frequency === 2
+                                  ? weekDay()
+                                  : formularz.values.frequency === 3
+                                  ? monthDay()
+                                  : doNothing()}
+                              </LocalizationProvider>
+                              <Button
+                                buttonStyle="btn--primary"
+                                buttonSize="btn--small"
+                                type="submit"
+                              >
+                                Zapisz
+                              </Button>
+                            </form>
+                          </DialogContent>
+                        </>
+                      )}
+                    </Dialog>
+                    <Link to="/ParentMainPage" className="col-p">
                       <FontAwesomeIcon
                         icon={faBook}
                         className="transfers-icon"
                       />
                     </Link>
-                    <Link to="/" className="col-p">
+                    <Link to="/ParentMainPage" className="col-p">
                       <FontAwesomeIcon
                         icon={faUserPen}
                         className="manage-icon"
