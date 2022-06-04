@@ -119,7 +119,7 @@ function TransactionByKid() {
                       .filter((owner) => owner.user_type === 1)
                       .map((parent) => (
                         <p value={parent.id} key={parent.id}>
-                          {"Rodzic "}
+                          <p className="parentLabel">Rodzic </p>
                           <p className="optionParent">
                             {parent.first_name} {parent.last_name}
                           </p>
