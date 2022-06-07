@@ -2,29 +2,35 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./ParentMainPagePanel.css";
 import { Button } from "./Button";
-import { faUserPen, faBook } from "@fortawesome/free-solid-svg-icons";
+import {faUserPen, faBook, faSackDollar} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LoadingSpinner } from "./LoadingSpinner";
-import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-} from "@mui/material";
-import { ErrorMessage, Field, Form, Formik } from "formik";
-import { UserInfo, BaseUrl } from "../services/ApiCalls";
+import { Dialog, DialogActions, DialogContent, DialogTitle, Stack } from "@mui/material";
+import { ErrorMessage, Field, Form, Formik, useFormik} from "formik";
+import { UserInfo, BaseUrl, } from "../services/ApiCalls";
 import toast, { Toaster } from "react-hot-toast";
 import * as Yup from "yup";
+import { MenuItem, TextField} from "@material-ui/core";
+import { DesktopDatePicker, TimePicker } from "@mui/x-date-pickers";
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import {doNothing} from "@mui/x-date-pickers/internals/utils/utils";
 
 function ParentMainPagePanel() {
   const [id, setId] = useState();
   const [balance, setBalance] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoading2, setIsLoading2] = useState(true);
+  const [isLoadingAllowance, setIsLoadingAllowance] = useState(true);
   const [users, setUsers] = useState([]);
+  const [user, setUser] = useState([]);
+  const [userAllowance, setUsersAllowance] = useState([]);
   const [openDeposit, setOpenDeposit] = useState(false);
   const [openWithdraw, setOpenWithdraw] = useState(false);
-  // const [responseStatus, setResponseStatus] = useState(null);
+  const [openAllowance, setOpenAllowance] = useState(false);
+  const [responseStatus, setResponseStatus] = useState(null);
+  const [time, setTime] = useState(new Date());
+  // const [date, setDate] = useState(null);
 
   const handleOpenDeposit = () => {
     setOpenDeposit(true);
@@ -38,6 +44,13 @@ function ParentMainPagePanel() {
   const handleCloseWithdraw = () => {
     setOpenWithdraw(false);
   };
+  const handleOpenAllowance = () => {
+    setOpenAllowance(true);
+  };
+  const handleCloseAllowance = () => {
+    setOpenAllowance(false);
+  };
+
 
   const Balance = useCallback(async () => {
     await fetch("".concat(`${BaseUrl}`, ["users/"], `${id}`), {
@@ -71,6 +84,29 @@ function ParentMainPagePanel() {
       });
   }, []);
 
+  const handleUserAllowance = useCallback(async (user) => {
+    await fetch("".concat(`${BaseUrl}`, ["allowances/"]),{
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((resJSON) => {
+        let temp = resJSON.filter((allowance) => allowance.child === user.id)
+        if(temp.length > 1) {
+          setUsersAllowance(temp[temp.length-1]);
+        } else {
+          setUsersAllowance(temp);
+        }
+        setIsLoadingAllowance(false);
+        setUser(user);
+      });
+  }, []);
+
   useEffect(() => {
     UserInfo().then((r) => {
       setId(r.pk);
@@ -87,6 +123,71 @@ function ParentMainPagePanel() {
       .positive("Kwota musi być większa od 0!")
       .required("Kwota jest wymagana!"),
   });
+
+  const allowanceValidation = Yup.object().shape({
+    amount: Yup.number("Kwota musi być liczbą!")
+      .positive("Kwota musi być większa od 0!")
+      .required("Kwota jest wymagana!"),
+  });
+
+  const formularz = useFormik({
+    initialValues: {
+      child: "",
+      amount: "",
+      frequency: "",
+      execute_time: "",
+      day_of_month: new Date().getDay(),
+      day_of_week: new Date().getDay(),
+    },
+    validationSchema: allowanceValidation,
+    onSubmit: async (values) => {
+      await fetch("".concat(`${BaseUrl}`, ["allowances/"]), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(values, null, 2),
+      }).then((res) => {
+        setResponseStatus(res.status);
+        if (responseStatus === 201) {
+          return toast.success(
+            "".concat(
+              "Udało się ustalić kieszonkowe na ",
+              `${values.amount}`,
+              " zł.",
+            )
+          );
+        } else if (responseStatus === 400) {
+          return toast.error("Nie udało się ustalić kieszonkowego!");
+        }
+      });
+    },
+  });
+  // console.log(userAllowance, user.id, formularz.values.child, formularz.values.execute_time)
+  const weekDay = () => {
+    return (
+      <DesktopDatePicker
+        label="Dzień tygodnia"
+        inputFormat="MM/dd/yyyy"
+        value={formularz.values.day_of_week}
+        onChange={formularz.handleChange}
+        renderInput={(params) => <TextField {...params} />}
+      />
+    );
+  };
+
+  const monthDay = () => {
+    return (
+      <DesktopDatePicker
+        label="Dzień miesiąca"
+        inputFormat="MM/dd/yyyy"
+        value={formularz.values.day_of_month}
+        onChange={formularz.handleChange}
+        renderInput={(params) => <TextField {...params} />}
+      />
+    );
+  };
 
   return (
     <>
@@ -136,6 +237,7 @@ function ParentMainPagePanel() {
                           )
                         );
                       } else if (res.status === 400) {
+                        Balance();
                         return toast.error("Nie udało się wpłacić pieniędzy!");
                       }
                     });
@@ -205,6 +307,7 @@ function ParentMainPagePanel() {
                           )
                         );
                       } else if (res.status === 400) {
+                        Balance();
                         return toast.error("Nie udało się wypłacić pieniędzy!");
                       }
                     });
@@ -272,25 +375,119 @@ function ParentMainPagePanel() {
             ) : (
               users
                 .filter((owner) => owner.user_type !== 1)
-                .map((user) => (
-                  <div key={user.id} className="row-p">
+                .map((kid) => (
+                  <div key={kid.id} className="row-p">
                     <p className="col-p">
-                      {user.first_name} {user.last_name}
+                      {kid.first_name} {kid.last_name}
                     </p>
-                    <p className="col-p">{user.balance} zł</p>
-                    <Link to="/" className="col-p">
-                      <FontAwesomeIcon
-                        icon={faBook}
-                        className="allowance-icon"
-                      />
-                    </Link>
-                    <Link to="/" className="col-p">
+                    <p className="col-p">{kid.balance} zł</p>
+                    <FontAwesomeIcon
+                      icon={faSackDollar}
+                      className="col-p"
+                      onClick={() => {
+                        handleOpenAllowance();
+                        handleUserAllowance(kid);
+                      }}
+                    />
+                    <Dialog
+                      open={openAllowance}
+                      onClose={() => {
+                        handleCloseAllowance();
+                        setIsLoadingAllowance(true);
+                      }}
+                    >
+                      {isLoadingAllowance ? (
+                        <LoadingSpinner spinnerSize="spin-medium" />
+                      ) : (
+                        <>
+                          <DialogTitle>Kieszonkowe</DialogTitle>
+                          <DialogTitle>
+                            {user.first_name} {user.last_name}
+                          </DialogTitle>
+                          <DialogContent>
+                            <form
+                              onSubmit={formularz.handleSubmit}
+                              className="allowance-form"
+                            >
+                              <TextField
+                                fullWidth
+                                id="amount"
+                                name="amount"
+                                label="Kwota"
+                                type="number"
+                                value={formularz.values.amount}
+                                onChange={formularz.handleChange}
+                                error={
+                                  formularz.touched.amount &&
+                                  Boolean(formularz.errors.amount)
+                                }
+                                helperText={
+                                  formularz.touched.amount &&
+                                  formularz.errors.amount
+                                }
+                              />
+                              <TextField
+                                id="outlined-select-currency"
+                                name="frequency"
+                                select
+                                label="Częstotliwość"
+                                value={formularz.values.frequency}
+                                onChange={formularz.handleChange}
+                                error={
+                                  formularz.touched.frequency &&
+                                  Boolean(formularz.errors.frequency)
+                                }
+                                helperText={
+                                  formularz.touched.frequency &&
+                                  formularz.errors.frequency
+                                }
+                              >
+                                <MenuItem value={1}>Codziennie</MenuItem>
+                                <MenuItem value={2}>Co tydzień</MenuItem>
+                                <MenuItem value={3}>Co miesiąc</MenuItem>
+                              </TextField>
+                              <LocalizationProvider
+                                dateAdapter={AdapterDateFns}
+                              >
+                                <Stack spacing={3}>
+                                  <TimePicker
+                                    label="Godzina wykonania"
+                                    value={time}
+                                    onChange={(newValue) => {
+                                      setTime(newValue);
+                                    }}
+                                    renderInput={(params) => (
+                                      <TextField {...params} />
+                                    )}
+                                    ampm={false}
+                                    closeOnSelect={true}
+                                  />
+                                </Stack>
+                                {formularz.values.frequency === 2
+                                  ? weekDay()
+                                  : formularz.values.frequency === 3
+                                  ? monthDay()
+                                  : doNothing()}
+                              </LocalizationProvider>
+                              <Button
+                                buttonStyle="btn--primary"
+                                buttonSize="btn--small"
+                                type="submit"
+                              >
+                                Zapisz
+                              </Button>
+                            </form>
+                          </DialogContent>
+                        </>
+                      )}
+                    </Dialog>
+                    <Link to="/ParentMainPage" className="col-p">
                       <FontAwesomeIcon
                         icon={faBook}
                         className="transfers-icon"
                       />
                     </Link>
-                    <Link to="/" className="col-p">
+                    <Link to="/ParentMainPage" className="col-p">
                       <FontAwesomeIcon
                         icon={faUserPen}
                         className="manage-icon"

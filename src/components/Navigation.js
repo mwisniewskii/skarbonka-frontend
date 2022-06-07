@@ -68,16 +68,40 @@ function Navigation() {
         <div className="navi-container">
           <Link
             to={userType === 1 ? "/ParentMainPage" : "/KidMainPage"}
-            className="main-page"
+            className={`
+              main-page 
+              ${
+                window.location.pathname === "/ParentMainPage" ||
+                window.location.pathname === "/KidMainPage"
+                  ? "bottomBorder"
+                  : ""
+              }`}
           >
             Strona Główna
           </Link>
 
-          <Link to="/" className="transfers">
+          <Link
+            to={userType === 1 ? "/TransactionByParent" : "/TransactionByKid"}
+            className={`
+              transfers 
+              ${
+                window.location.pathname === "/TransactionByParent" ||
+                window.location.pathname === "/TransactionByKid"
+                  ? "bottomBorder"
+                  : ""
+              }`}
+          >
             Przelewy
           </Link>
 
-          <Link to="/" className="loans">
+          <Link
+            to="/LoansPage"
+            className={`
+              loans 
+              ${
+                window.location.pathname === "/LoansPage" ? "bottomBorder" : ""
+              }`}
+          >
             Pożyczki
           </Link>
 

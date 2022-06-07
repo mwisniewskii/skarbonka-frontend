@@ -9,6 +9,9 @@ import ResetPassword from "./components/pages/ResetPassword";
 import ConfirmResetPassword from "./components/PasswordPanel/ConfirmResetPassword";
 import Footer from "./components/Footer";
 import ParentRegisterKid from "./components/pages/ParentRegsiterKid";
+import TransactionByParent from "./components/pages/TransactionByParentPanel";
+import TransactionByKid from "./components/pages/TransactionByKidPanel";
+import LoansPage from "./components/pages/LoansPage";
 import ParentMainPage from "./components/pages/ParentMainPage";
 import KidMainPage from "./components/pages/KidMainPage";
 
@@ -34,6 +37,17 @@ function App() {
             exact
             element={<ParentRegisterKid />}
           />
+          <Route
+            path="/TransactionByParent"
+            exact
+            element={<TransactionByParent />}
+          />
+          <Route
+            path="/TransactionByKid"
+            exact
+            element={<TransactionByKid />}
+          />
+          <Route path="/LoansPage" exact element={<LoansPage />} />
         </Routes>
         <Footer />
       </Router>
