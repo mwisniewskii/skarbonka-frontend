@@ -8,7 +8,7 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
 const PositiveMessage = () => (
-  <section class="popUp">
+  <section className="popUp">
     <div class="register201">
       <p>
         Twoje konto zostało utworzone. Kliknij <em>Zaloguj się</em>.

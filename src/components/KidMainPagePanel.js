@@ -133,6 +133,7 @@ function KidMainPagePanel() {
                           )
                         );
                       } else if (res.status === 400) {
+                        Balance();
                         return toast.error("Nie udało się wpłacić pieniędzy!");
                       }
                     });

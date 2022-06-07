@@ -435,7 +435,7 @@ function ParentMainPagePanel() {
         </DialogContent>
       </>
   }
-
+  
   return (
     <>
       <div className="main-p">
@@ -457,7 +457,7 @@ function ParentMainPagePanel() {
             >
               Wpłać pieniądze
             </Button>
-            <Dialog open={openDeposit} onClose={handleCloseDeposit}>,
+            <Dialog open={openDeposit} onClose={handleCloseDeposit}>
               <DialogTitle>Wpłać pieniądze na konto</DialogTitle>
               <DialogContent>
                 <Formik
@@ -484,6 +484,7 @@ function ParentMainPagePanel() {
                           )
                         );
                       } else if (res.status === 400) {
+                        Balance();
                         return toast.error("Nie udało się wpłacić pieniędzy!");
                       }
                     });
@@ -553,6 +554,7 @@ function ParentMainPagePanel() {
                           )
                         );
                       } else if (res.status === 400) {
+                        Balance();
                         return toast.error("Nie udało się wypłacić pieniędzy!");
                       }
                     });
