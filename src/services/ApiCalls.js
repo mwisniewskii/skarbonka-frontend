@@ -2,7 +2,7 @@ export const BaseUrl = 'https://api.mwis.pl/'
 
 
 export const AuthUser = async () => {
-  return await fetch("".concat(`${BaseUrl}`, ['auth/user']), {
+  return await fetch("".concat(`${BaseUrl}`, 'auth/user'), {
      headers: {
        "Content-Type": "application/json",
      },
@@ -11,7 +11,7 @@ export const AuthUser = async () => {
 }
 
 export const UserInfo = async () => {
-   const response = await fetch("".concat(`${BaseUrl}`, ['auth/user']),  {
+   const response = await fetch("".concat(`${BaseUrl}`, 'auth/user'),  {
       headers: {
         "Content-Type": "application/json",
       },
@@ -21,7 +21,7 @@ export const UserInfo = async () => {
 }
 
 export const FamilyUsers = async () => {
-   const response = await fetch("".concat(`${BaseUrl}`, ["users/"]), {
+   const response = await fetch("".concat(`${BaseUrl}`, "users/"), {
      headers: {
        "Content-Type": "application/json",
      },
